@@ -1,0 +1,181 @@
+/**/
+
+DOCUMENTATION FOR removeDuplicates.py
+
+=====================================
+
+removeDuplicates.py is a python file that is packaged to work with the
+auto it script
+
+that Daniel and Jie wrote to automate the process of collecting data
+from the Wind Turbine,
+
+saving this data, and combining it with past data already stored on the
+computer that
+
+receives this data. The auto it script runs at specified time intervals.
+So our python
+
+file removeDuplicates.py will also be run as many times as the auto it
+script will be run
+
+in a day.
+
+ 
+
+HOW THE PYTHON FILE WORKS
+
+=========================
+
+The python file could either be run stand-alone. But by default, it's
+run by the
+
+auto-it script that collects and accumulates data from the wind turbine.
+
+ 
+
+To run the script without using auto it, make sure that there is a file
+in the current
+
+directory called "Hourly Wind Turbine Data.txt." and another called
+"current.txt".
+
+Those two files are integral to the functioning of the script. If those
+files are
+
+absent in the current directory when you run the script, the python
+shell will
+
+spit out some errors (very unhelpful errors, too).
+
+ 
+
+The file opens the already collated wind turbine file "Hourly Wind
+Turbine Data.txt"
+
+and the recently collected data from the turbine "current.txt". Assuming
+that the auto it
+
+script runs the python file and that the auto it script runs as it's
+expected to,
+
+then we are almost certain that both files will be in the same directory
+as the
+
+python file, removeDuplicates.py.
+
+Thus, removeDuplicates.py, current.txt, and Hourly Wind Turbine Data.txt
+should be
+
+in the same directory as the auto it script, turbineinfo.au3.
+
+ 
+
+FUNCTIONS
+
+=========
+
+dictPrint(values) --
+
+Accepts a list of values
+
+Prints a list of the key-value pairs in the dictionary in the value .i.e
+value.value_dict
+
+ 
+
+getFieldsWindTurbine(data_lines) --
+
+Accepts a list of strings. Each string is a line in the pre-existing
+wind turbine file
+
+Returns a list containing all the headers. The headers are stripped of
+any quotes.
+
+ 
+
+getFieldsCurrent(first_data_line) --
+
+Accepts a list of strings. Each string is a line in the pre-existing
+just made turbine file
+
+Returns a list containing all the headers. The headers are stripped of
+any quotes.
+
+ 
+
+printList(data_list) --
+
+Helper function to print out the values in the list, data_list
+
+ 
+
+getBeforeData(data_list) --
+
+Returns a list of strings containing all the lines before the actual
+tuples of data. It
+
+includes the headers.
+
+ 
+
+insertOnTopUniqueValue(current_values, turbine_values) --
+
+Returns a list containing a union of the current_values and the
+turbine_values. Both
+
+current_values and turbine_values are list of Value objects. Before
+returning the list
+
+of values, all duplicates from the resulting list are removed.
+
+ 
+
+getActData(data_list) --
+
+Returns all the lines of strings after the headers in the file. So the
+returned list
+
+does not include the header.
+
+ 
+
+giveMeLines(values) --
+
+Returns a list containing the line (string) associated with each value.
+
+ 
+
+ 
+
+ 
+
+CLASSES
+
+=======
+
+Value:
+
+A value is a class to help us store information about a line in a data
+file.
+
+It has the following fields:
+
+self.line_values -- stores a list of all the field values.
+
+self.len_line_values -- stores the number of fields the data in
+line_values represents
+
+self.line -- stores the actual unexploded string of data associated with
+a tuple in the
+
+  data file
+
+self.value_dict -- dictionary that maps all the fields in the data file
+to value in the
+
+   field values that the current object stores information about.
+
+   
+
+
