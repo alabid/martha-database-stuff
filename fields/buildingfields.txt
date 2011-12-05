@@ -1,0 +1,7 @@
+Fields for building (different from houses):
+Code
+Building
+Acc#
+
+It could be a warehouse or another building (like the building for the
+turbine).
