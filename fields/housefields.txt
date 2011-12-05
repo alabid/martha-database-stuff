@@ -1,0 +1,5 @@
+House fields:
+House
+Address
+Year Built
+Sq. ft
