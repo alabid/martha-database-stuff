@@ -3,3 +3,4 @@ xlrd and xlwt.
 
 1. scienceoss.com/write-excel-files-with-python-using-xlwt/
 2. scienceoss.com/read-excel-files-from-python/
+3. http://www.lexicon.net/sjmachin/xlrd.html
