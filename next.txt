@@ -1,0 +1,13 @@
+STEPS WE HAVE TO TAKE NEXT
+==========================
+No more database stuff, for now. Awww...
+We had a meeting with Paula and Martha today and they said that we should first of all
+get the data in one place and in one format because the data right now is in a mess and needs to be cleaned
+up. After doing that, we can now start creating and even using the database.
+
+1. We have converted all the xlsx files to txt.
+2. We have a list of all the possible unique header names.
+3. We could use this as a guide to make csv files that have a relation schema similar
+   to the relation schema we have for the database schema we've already created.
+   In other words, the behemoth csv or csv's that we'd end up with should be easy to pipe into the
+   database. It should be in a good format and should be easily translatable.
