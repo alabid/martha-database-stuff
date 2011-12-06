@@ -1,0 +1,55 @@
+diff --git a/connect.php b/connect.php
+new file mode 100644
+index 0000000..464453d
+--- /dev/null
++++ b/connect.php
+@@ -0,0 +1,26 @@
++<?php
++// connect to database using php
++$con = mysql_connect("localhost", "", "");
++if (!$con) die("Could not connect: " . mysql_error());
++
++// do stuff here, for example
++/*
++  $query_exec = mysql_query($query, $con);
++  if (!$query_exec) {
++    echo "Error executing the query";
++  }
++  where $query == "CREATE DATABASE my_db";
++
++  // you could select a database like this:
++  mysql_select_db("my_db", $con);
++  $sql = "CREATE TABLE persons (
++  FirstName varchar(15),
++  LastName varchar(15)
++  )";
++  
++  mysql_query($sql, $con);
++
++ */
++
++mysql_close($con);
++?>
+\ No newline at end of file
+diff --git a/connect.php~ b/connect.php~
+new file mode 100644
+index 0000000..754b8c9
+--- /dev/null
++++ b/connect.php~
+@@ -0,0 +1,4 @@
++<?php
++// connect to database using php
++
++?>
+\ No newline at end of file
+diff --git a/me b/me
+new file mode 100644
+index 0000000..f7eb84b
+--- /dev/null
++++ b/me
+@@ -0,0 +1 @@
++blablab 
+\ No newline at end of file
+diff --git a/me~ b/me~
+new file mode 100644
+index 0000000..e69de29
