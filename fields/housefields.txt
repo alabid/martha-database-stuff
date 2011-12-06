@@ -1,5 +1,19 @@
-House fields:
+House fields
+============
 House
 Address
-Year Built
-Sq. ft
+Employee/student -- employee/student/other
+========
+Buildings
+=========
+Code
+Building
+Acc#
+Insured Buildings
+Insured Dorms
+
+
+Common
+======
+Year built
+sq.ft
