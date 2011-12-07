@@ -102,34 +102,38 @@ function addBuildingType($data){
   if ($buildingID == "")
     return "";
   
-}
-
-$f = fopen("buildingdata.txt","w");
-
-$row = fgets($f);
-$header = split("\t",$row);
-$row = fgets($f);
-while ($row){
-  $temp = split("\t",$row);
+}/*
+$filename = "buildingdata.txt";
+$f = fopen($filename,"r") or die("Can't open file");
+$content = fread($f, filesize($filename));
+$row = split("\r",$content);
+fclose($f);
+$header = split("\t",$row[0]);
+//var_dump($header);
+echo sizeof($header);
+for ($i=1;$i< sizeof($row);$i++){
+  $temp = split("\t",$row[$i]);
+  
   if (sizeof($header)!=sizeof($temp)){
     continue;
   }
   $newArray = array();
-  for ($i = 0; $i < sizeof($header);$i++){
-    $newArray[$header[$i]] = $temp[$i];
+  for ($j = 0; $j < sizeof($header);$j++){
+    $newArray[$header[$j]] = $temp[$j];
   }
-  addNewBuilding($newArray);
-
-}
-
-
-
-
+  //var_dump($newArray);
+  $buildingID = addNewBuilding($newArray);
+  echo $buildingID;
+  }*/
+$filename = "";
 
 
 
 
 
 
-	mysql_close($connection);
+
+
+
+mysql_close($connection);
 ?>
