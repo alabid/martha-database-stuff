@@ -125,7 +125,30 @@ for ($i=1;$i< sizeof($row);$i++){
   $buildingID = addNewBuilding($newArray);
   echo $buildingID;
   }*/
-$filename = "";
+$filename = "buildingHistory.txt";
+$f = fopen($filename,"r") or die("Can't open file");
+$content = fread($f, filesize($filename));
+$row = split("\r",$content);
+fclose($f);
+$header = split("\t",$row[0]);
+
+echo sizeof($header);
+for ($i=1;$i< sizeof($row);$i++){
+  $temp = split("\t",$row[$i]);
+  
+  if (sizeof($header)!=sizeof($temp)){
+    continue;
+  }
+  $newArray = array();
+  for ($j = 0; $j < sizeof($header);$j++){
+    $newArray[$header[$j]] = $temp[$j];
+  }
+  //var_dump($newArray);
+  $historyID = addBuildingHistory($newArray);
+  echo $historyID;
+  }
+
+//$filename = "building_buildingType.txt";
 
 
 
