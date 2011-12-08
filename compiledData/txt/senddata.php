@@ -1,4 +1,34 @@
 <?php 
+     function getDataFromDB($tblName,$colName,$colVal,$colQuery){
+       /*
+	 Retrieve the column colQuery in the table tblName where the value of colName is colVal
+       */
+       $query = "SELECT {$colQuery} FROM {$tblName} WHERE {$colName}='{$colVal}'";
+       $res = mysql_query($query);
+       if ($row = mysql_fetch_array($res)){
+	 return $row[$colQuery];
+       }
+       else {
+	 return "";
+       }
+     }
+	
+	/*
+	PHP page to receive and save data into MySQL database.
+	Return a streamID when receiving information from a new stream.
+	Determine whether this is a new or previous user.
+	*/
+	$connection = mysql_connect("localhost","root","");
+	if (!$connection)
+	{
+		die("Database connection failed:". mysql_error());
+	}
+	
+	$db_select = mysql_select_db("EnergyData",$connection);
+	if (!$db_select)
+	{
+		die("Database select failed:".mysql_error());
+	}
 function getDataFromDB($tblName,$colName,$colVal,$colQuery){
   /*
     Retrieve the column colQuery in the table tblName where the value of colName is colVal
@@ -12,6 +42,7 @@ function getDataFromDB($tblName,$colName,$colVal,$colQuery){
     return "";
   }
 }
+
 
 function updateDataInDB($tblName,$colName,$colVal,$toSet,$newValue){
   $query = "UPDATE {$tblName} SET {$toSet} = '{$newValue}' WHERE {$colName}='{$colVal}'";
