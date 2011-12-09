@@ -1,0 +1,6 @@
+THERE ARE SOME FILES THAT CANNOT BE INSERTED INTO THE DATABASE WITHOUT
+LOSING SOME DATA. THOSE FILES SHOULD BE LABELED AS FOLLOWS:
+if the filename is "daniel.xlsx"
+It should be renamed to "daniel_ind.xlsx" -- stands for "daniel" + "independent" to
+show that the data is independent of the other ones that will still be inserted
+into the database.
