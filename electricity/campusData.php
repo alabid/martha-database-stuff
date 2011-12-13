@@ -61,6 +61,7 @@ function siemensEnergyHandler($content,$metadata){
 		  "Hour"=>0,
 		  "Minute" => 0,
 		  "Second" => 0,
+		  "Duration" =>"Daily",
 		  "MeasuredValue" => null,
 		  "BTUConversion" => null,
 		  "MeterID"=> null,
