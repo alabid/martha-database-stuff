@@ -1,0 +1,3 @@
+Year	Month	Day	Hour	Minute	Second	MeasuredValue	Unit	BTUConversion	Type
+2011	1	10	20	0	0	100	KWH	10	Electricity
+2011	1	11	20	0	0	120	KWH	12	Electricity
