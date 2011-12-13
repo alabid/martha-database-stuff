@@ -15,14 +15,13 @@ function meterHandler($row){
   $meterType = strcmp(strtolower($row["MeterType"]),"digital")==0 ? "Digital":(strcmp(strtolower($row["MeterType"]),"analog")==0 ? "Analog":"");
 
   $meterInfo = array(
-		     "MeterDescr"=>$row["MeterDescr"],
+		     "MeterDescr"=> $row["MeterDescr"],
 		     "MeterNum"=>$row["MeterNum"],
 		     "BuildingID" => findBuildingID($row),
 		     "FuelTypeID" =>addFuelType($row),
 		     "MeterType" => $meterType,
-		     "MeterManufID" => addSupplier($row),
+		     "MeterManufID" => addSupplier($row,true),
 		     "MeterModel" =>$row["MeterModel"],
-		    
 		     "SiemensPt" =>$row["SiemensPt"]
 		     );
  
@@ -31,17 +30,41 @@ function meterHandler($row){
 }
 
 function electricHandler($content){
-  $data = array("Year"=>null,
-		"Month"=>null,
-		"Day"=>null,
-		"Hour"=>0,
-		"Minute" => 0,
-		"Second" => 0,
-		"MeasuredValue" => null,
-		"BTUConversion" => null,
-		"MeterID"=> null,
-		"Unit" => "Kwh",
-		"FuelType"=>"electricity"
+  $metadata = array("Unit" => "Kwh",
+		    "FuelType"=>"electricity",
+		    "MeterIdentifier"=>"ELEC",
+		    "Conversion"=>3412,
+		    "Supplier"=>"Xcel");
+  siemensEnergyHandler($content,$metadata);
+}
+function campusWaterHandler($content){
+  $metadata = array("Unit"=>"gal",
+		    "FuelType"=>"campus water",
+		    "Conversion"=>null,
+		    "MeterIdentifier"=>"H2O",
+		    "Supplier"=>"Carleton College");
+  siemensEnergyHandler($content,$metadata);
+}
+function campusSteamHandler($content){
+  $metadata = array("Unit"=>"Klb",
+		    "FuelType"=>"steam",
+		    "Conversion"=>1000,
+		    "MeterIdentifier"=>"STEAM",
+		    "Supplier"=>"Carleton College");
+  siemensEnergyHandler($content,$metadata);
+}
+function siemensEnergyHandler($content,$metadata){
+    $data = array("Year"=>null,
+		  "Month"=>null,
+		  "Day"=>null,
+		  "Hour"=>0,
+		  "Minute" => 0,
+		  "Second" => 0,
+		  "MeasuredValue" => null,
+		  "BTUConversion" => null,
+		  "MeterID"=> null,
+		  "Unit" => $metadata["Unit"],
+		  "FuelType"=>$metadata["FuelType"]
 		);
   $meter = array(
 		 "MeterDescr"=>"",
@@ -49,9 +72,9 @@ function electricHandler($content){
 		 "BuildingName" => "",
 		 "MeterType" => "",
 		 "MeterManufName" =>"Siemens",
-		 "Supplier" => "Xcel",
+		 "Supplier" => $metadata["Supplier"],
 		 "MeterModel" =>"",
-		 "FuelType" =>"electricity",
+		 "FuelType" =>$metadata["FuelType"],
 		 "SiemensPt" =>""
 		 );
   $meters = array(); 
@@ -71,7 +94,7 @@ function electricHandler($content){
     $field = explode("\t",$line);
     //var_dump($field);
     //echo "<br/>";
-    if (strstr($line,"Point") && strstr($line, "ELEC")){
+    if (strstr($line,"Point") && strstr($line, $metadata["MeterIdentifier"])){
       $meter["SiemensPt"] =  str_replace(":","",$field[0]);
       $meter["MeterDescr"] = $field[1];
       $meter["BuildingName"] = $field[2];
@@ -106,7 +129,11 @@ function electricHandler($content){
 	    $data["MeterID"] = $meters[$header[$i]];
 	    if (is_numeric($field[$i])){
 	      $data["MeasuredValue"] = $field[$i];
-	      $data["BTUConversion"] = (double)$field[$i]*3412;
+	      if ($metadata["Conversion"]==null){
+		$data["BTUConversion"]=null;
+	      }else{
+		$data["BTUConversion"] = (double)$field[$i]*(double)$metadata["Conversion"];
+	      }
 	      addEnergy($data);
 	      //var_dump($data);
 	      echo "<br/>";
@@ -116,18 +143,33 @@ function electricHandler($content){
       }
     }
   }
+
 }
+function dumpData($filename,$functionName){
+  $f = fopen($filename,"r") or die("Can't open file");
+  $data =(fread($f, filesize($filename)));
+  //echo $data;
+  $content = explode("\r",$data);
+  //var_dump($content);
+  $functionName($content);
+  fclose($f);
+}
+function addElectricity(){
+  $filename = "CAMPUS ELECTRIC.txt";
+  dumpData($fileName,"electricHandler");
+}
+ 
+function addCampusWater(){
+  $filename = "CAMPUS WATER.txt";
+  dumpData($fileName,"campusWaterHandler");
+} 
+function addCampusSteam(){
+  $filename = "CAMPUS STEAM.txt";
+  dumpData($fileName,"campusSteamHandler");
+} 
 
-echo "hello";
-$filename = "CAMPUS ELECTRIC.txt";
-$f = fopen($filename,"r") or die("Can't open file");
-$data =(fread($f, filesize($filename)));
-//echo $data;
-$content = explode("\r",$data);
-//var_dump($content);
-electricHandler($content);
-fclose($f);
-
-  
+addCampusWater();
+addCampusSteam();
+mysql_close();
 
 ?>

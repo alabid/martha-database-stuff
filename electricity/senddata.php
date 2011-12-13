@@ -352,7 +352,7 @@ function addEnergy($data){
   $query = "SELECT EnergyDataID, BTUConversion FROM EnergyData WHERE Date='{$date}' AND MeterID = '{$meterID}' AND MeasuredValue='{$measuredValue}' AND Unit='{$unit}'";
   $res = mysql_query($query);
   if ($row = mysql_fetch_array($res)){
-    if ($row["BTUConversion"]!=$conversion){
+    if ($row["BTUConversion"]!=$conversion && $conversion!=null && $conversion!=""){
       $id = $row["EnergyDataID"];
       $query = "UPDATE EnergyData SET BTUConversion={$conversion} WHERE EnergyDataID={$id}";
       mysql_query($query);
@@ -360,7 +360,11 @@ function addEnergy($data){
     return;
 
   }
-  $query = "INSERT INTO EnergyData (Date, MeterID, MeasuredValue, Unit, BTUConversion) VALUES ('{$date}', '{$meterID}', '{$measuredValue}', '{$unit}','{$conversion}')";
+  if ($conversion!=null && $conversion!=""){
+    $query = "INSERT INTO EnergyData (Date, MeterID, MeasuredValue, Unit, BTUConversion) VALUES ('{$date}', '{$meterID}', '{$measuredValue}', '{$unit}','{$conversion}')";
+  }else{
+    $query = "INSERT INTO EnergyData (Date, MeterID, MeasuredValue, Unit) VALUES ('{$date}', '{$meterID}', '{$measuredValue}', '{$unit}')";
+  }
   mysql_query($query);
   echo "Query is".$query."<br/>";
 }
@@ -407,16 +411,16 @@ function addMeter($data){
   }
   //echo "in addMeter, fuel type ID :".$fuelTypeID."<br/>";
   
-  $meterManufID = ($data["MeterManufID"]!=null &&  $data["MeterManufID"]!="") ? $data["MeterManufID"] : (($data["SupplierID"]!=null && $data["SupplierID"]!="") ? $data["SupplierID"]: "");
+  $meterManufID = $data["MeterManufID"];
   if ($meterManufID=="" || $meterManufID==null){
     //get meter supplier's name.
     $supplier = ($data["MeterManufName"]!="" && ($data["MeterManufName"]!=null ) ?  
 		 $data["MeterManufName"]: (($data["Supplier"]!="" && $data["Supplier"]!=null) ? 
 					   $data["Supplier"] : (($data["SupplierName"]!="" && $data["SupplierName"]!=null) ? 
 								$data["SupplierName"] : "")));
-    //echo "Supplier name is ".$supplier."<br/>";
-    $data["Supplier"]=$supplier;
-    $meterManufID = addSupplier($data);
+    echo "Supplier name is ".$supplier."<br/>";
+    $data["MeterManufName"]=$supplier;
+    $meterManufID = addSupplier($data,true);
     if ($meterManufID =="" || $meterManufID == null){
       return "";
     }
@@ -431,7 +435,7 @@ function addMeter($data){
   $query = "SELECT MeterID, MeterNum,SiemensPt FROM MeterInfo WHERE BuildingID='{$buildingID}' AND MeterManufID='{$meterManufID}' AND FuelTypeID ='{$fuelTypeID}'";
   echo "<br/>see the query: ".$query."<br/>";
   $res = mysql_query($query);
-  if ($row = mysql_fetch_array($res)){
+  while ($row = mysql_fetch_array($res)){
     if (strcmp($meterNum,$row["MeterNum"])==0 && strcmp($siemensPt,$row["SiemensPt"])==0){
       return $row["MeterID"];
     }
@@ -444,7 +448,7 @@ function addMeter($data){
   //echo "Meter Type is ".$meterType."<br/>";
   $meterModel = $data["MeterModel"];
 
-  // get siemen point information.
+  // get siemens point information.
   
   
   $query = "INSERT INTO MeterInfo (BuildingID, MeterManufID,FuelTypeID,";
@@ -535,9 +539,13 @@ function addFuelType($data){
   Depending on which data are available.
 
 */
-function addSupplier($data){
-  
-  $supplier = $data["Supplier"];
+function addSupplier($data,$isMeter=false){
+  if ($isMeter){
+    $supplier = $data["MeterManufName"];
+
+  }else{
+    $supplier = $data["Supplier"];
+  }
   $supplierDescr = $data["SupplierDescr"];
   $supplierID = getDataFromDB("Supplier","SupplierName",$supplier,"SupplierID");
   // check if it is there already.
