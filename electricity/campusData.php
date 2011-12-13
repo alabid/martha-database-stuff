@@ -26,6 +26,7 @@ function meterHandler($row){
 		     );
  
   $meterID = addMeter($meterInfo);
+  addSupplier($row);
   return $meterID;
 }
 
@@ -90,7 +91,7 @@ function siemensEnergyHandler($content,$metadata){
     }
    
   
-    // get the Siemen point and description.
+    // get the Siemens point and description.
     $field = explode("\t",$line);
     //var_dump($field);
     //echo "<br/>";
@@ -132,7 +133,8 @@ function siemensEnergyHandler($content,$metadata){
 	      if ($metadata["Conversion"]==null){
 		$data["BTUConversion"]=null;
 	      }else{
-		$data["BTUConversion"] = (double)$field[$i]*(double)$metadata["Conversion"];
+	       
+		$data["BTUConversion"] = ((double)$field[$i])*((double)$metadata["Conversion"]);
 	      }
 	      addEnergy($data);
 	      //var_dump($data);
@@ -156,18 +158,18 @@ function dumpData($filename,$functionName){
 }
 function addElectricity(){
   $filename = "CAMPUS ELECTRIC.txt";
-  dumpData($fileName,"electricHandler");
+  dumpData($filename,"electricHandler");
 }
  
 function addCampusWater(){
   $filename = "CAMPUS WATER.txt";
-  dumpData($fileName,"campusWaterHandler");
+  dumpData($filename,"campusWaterHandler");
 } 
 function addCampusSteam(){
   $filename = "CAMPUS STEAM.txt";
-  dumpData($fileName,"campusSteamHandler");
+  dumpData($filename,"campusSteamHandler");
 } 
-
+addElectricity();
 addCampusWater();
 addCampusSteam();
 mysql_close();
