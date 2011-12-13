@@ -1,6 +1,6 @@
 <?php 
 // gloal connection to MySQL databse.
-$connection = mysql_connect("localhost","root","carleton2014");
+$connection = mysql_connect("localhost","root","");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());
@@ -23,14 +23,14 @@ function getDataFromDB($tblName,$colName,$colVal,$colQuery){
     Retrieve the column colQuery in the table tblName where the value of colName is colVal
   */
   $query = "SELECT {$colQuery} FROM {$tblName} WHERE {$colName}='{$colVal}'";
-  echo "this query is ".$query."<br/>";
+  // echo "this query is ".$query."<br/>";
   $res = mysql_query($query);
   if ($row = mysql_fetch_array($res)){
-    echo "we find ".$row[$colQuery]."!<br/>";
+    
     return $row[$colQuery];
   }
   else {
-    echo "we find nothing!<br/>";
+    
     return "";
   }
 }
@@ -122,10 +122,11 @@ function addBuildingHistory($data){
   $buildingID = getDataFromDB("building","BuildingName",$buildingName,"BuildingID");
   if ($buildingID == "")
     return "";
-  $query = "SELECT HistoryID FROM BuildingHistory WHERE BuildingID={$buildingID} AND SquareFeet= {$sf} AND YearChanged = {$year}";
+  $query = "SELECT HistoryID, FROM BuildingHistory WHERE BuildingID={$buildingID} AND SquareFeet= {$sf} AND YearChanged = {$year}";
   $res = mysql_query($query);
   if ($row = mysql_fetch_array($res)){
 	 $historyID =  $row["HistoryID"];
+	 
   }
   else {
     $query = "INSERT INTO BuildingHistory (BuildingID,SquareFeet,YearChanged) VALUES ({$buildingID},{$sf},{$year})";
@@ -197,7 +198,7 @@ function dumpDataToDB($filename,$functionName,$separator="\r"){
   
   $f = fopen($filename,"r") or die("Can't open file");
   $content = fread($f, filesize($filename));
-  $row = split($separator,$content);
+  $row = explode($separator,$content);
   fclose($f);
   $header = explode("\t",$row[0]);
   echo sizeof($header);
@@ -345,7 +346,7 @@ function addEnergy($data){
 
   $meterID = addMeter($data);
   if ($meterID=="" || $meterID==null){
-    echo "error in finding meter ID<br/>.";
+    echo "Error in finding meter ID<br/>.";
     return;
   }
   $query = "SELECT EnergyDataID, BTUConversion FROM EnergyData WHERE Date='{$date}' AND MeterID = '{$meterID}' AND MeasuredValue='{$measuredValue}' AND Unit='{$unit}'";
@@ -386,7 +387,7 @@ function addEnergy($data){
 function addMeter($data){
   // retrieve necessary data from the array of data in order to add the meter information to MySQL database.
   $meterID = $data["MeterID"];
-  if (is_numeric($meterID)){
+  if ($meterID!="" && $meterID!=null){
     return $meterID;
   }
   $buildingID = $data["BuildingID"];
@@ -395,7 +396,7 @@ function addMeter($data){
     $buildingID = getDataFromDB("building","BuildingName",$buildingName,"BuildingID");
     if ($buildingID ==""){
       echo "<br><br>Error in finding building!</br></br><br/>";
-      return;
+      return "";
     }
   }
 
@@ -404,7 +405,7 @@ function addMeter($data){
   if ($fuelTypeID =="" || $fuelTypeID ==null){
     return "";
   }
-  echo "in addMeter, fuel type ID :".$fuelTypeID."<br/>";
+  //echo "in addMeter, fuel type ID :".$fuelTypeID."<br/>";
   
   $meterManufID = ($data["MeterManufID"]!=null &&  $data["MeterManufID"]!="") ? $data["MeterManufID"] : (($data["SupplierID"]!=null && $data["SupplierID"]!="") ? $data["SupplierID"]: "");
   if ($meterManufID=="" || $meterManufID==null){
@@ -413,7 +414,7 @@ function addMeter($data){
 		 $data["MeterManufName"]: (($data["Supplier"]!="" && $data["Supplier"]!=null) ? 
 					   $data["Supplier"] : (($data["SupplierName"]!="" && $data["SupplierName"]!=null) ? 
 								$data["SupplierName"] : "")));
-    echo "Supplier name is ".$supplier."<br/>";
+    //echo "Supplier name is ".$supplier."<br/>";
     $data["Supplier"]=$supplier;
     $meterManufID = addSupplier($data);
     if ($meterManufID =="" || $meterManufID == null){
@@ -424,27 +425,28 @@ function addMeter($data){
 
 
   $meterNum = $data["MeterNum"];
-  $query = "SELECT MeterID, MeterNum FROM MeterInfo WHERE BuildingID='{$buildingID}' AND MeterManufID='{$meterManufID}' AND FuelTypeID ='{$fuelTypeID}'";
+  $siemensPt = ($data["SiemensPt"]!=null && $data["SiemensPt"]!="") ? 
+    $data["SiemensPt"]: (($data["Point"]!=null && $data["Point"]!="") ? 
+			$data["Point"]:"");
+  $query = "SELECT MeterID, MeterNum,SiemensPt FROM MeterInfo WHERE BuildingID='{$buildingID}' AND MeterManufID='{$meterManufID}' AND FuelTypeID ='{$fuelTypeID}'";
   echo "<br/>see the query: ".$query."<br/>";
   $res = mysql_query($query);
   if ($row = mysql_fetch_array($res)){
-    if (strcmp($meterNum,$row["MeterNum"])==0){
+    if (strcmp($meterNum,$row["MeterNum"])==0 && strcmp($siemensPt,$row["SiemensPt"])==0){
       return $row["MeterID"];
     }
   }
   
   $meterDescr = $data["MeterDescr"];
-  echo "Meter Type is ".$data["MeterType"]."!<br/>";
+  // echo "Meter Type is ".$data["MeterType"]."!<br/>";
   
   $meterType = strcmp(strtolower($data["MeterType"]),"digital")==0 ? "Digital":(strcmp(strtolower($data["MeterType"]),"analog")==0 ? "Analog":"");
-  echo "Meter Type is ".$meterType."<br/>";
+  //echo "Meter Type is ".$meterType."<br/>";
   $meterModel = $data["MeterModel"];
 
   // get siemen point information.
   
-  $siemensPt = ($data["SiemensPt"]!=null && $data["SiemensPt"]!="") ? 
-    $data["SiemensPt"]: (($data["Point"]!=null && $data["Point"]!="") ? 
-			$data["Point"]:"");
+  
   $query = "INSERT INTO MeterInfo (BuildingID, MeterManufID,FuelTypeID,";
   $value = "VALUES ('{$buildingID}','{$meterManufID}','{$fuelTypeID}',";
 
@@ -564,7 +566,7 @@ function addSupplier($data){
   
   $value = substr($value, 0, strlen($value)-1).")";
   $query = substr($query, 0 ,strlen($query)-1).") ".$value;
-  echo "<br/>Supplier query :".$query."<br/>";
+  //echo "<br/>Supplier query :".$query."<br/>";
   mysql_query($query);
   $supplierID = mysql_insert_id(); 
   // add to relation table:
@@ -578,7 +580,7 @@ function relateFuelTypeToSupplier($data){
   $supplierID = $data["SupplierID"];
   if ($typeID!=null && $typeID!="" && $supplierID !=null && $supplierID !=""){
     $query = "SELECT * FROM FuelType_Supplier WHERE FuelTypeID='{$typeID}' AND SupplierID ='{$supplierID}'";
-    echo "relate fuel type to supplier query: {$query}!<br/>";
+    //echo "relate fuel type to supplier query: {$query}!<br/>";
     $res = mysql_query($query);
     if ($row = mysql_fetch_array($res)){
       return;
@@ -598,11 +600,11 @@ function findBuildingID($data){
   }
   $buildingName = $data["BuildingName"];
   if ($buildingName !=null && $buildingName !=""){
-    echo "going here !{$buildingName}!<br/>";
     
-    $id = getDataFromDB("building","BuildingName",$buildingName,"BuildingID");
-    echo "going here {$id}!<br/>";
-  return $id;
+    
+    return  getDataFromDB("building","BuildingName",$buildingName,"BuildingID");
+   
+  
   }
   $buildingCode = $data["BuildingCode"];
   if ($buildingCode !=null && $buildingCode !=""){
