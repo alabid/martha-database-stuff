@@ -1,10 +1,12 @@
+<html>
+<script language="JavaScript" src="jquery-1.6.1.min.js"></script>
 <?php
-echo "<html>"
+
 echo "<head><title>Energy Data User Interface</title></head>";
 echo "<body>";
 echo "Select a building: ";
 
-$connection = mysql_connect("localhost","root","");
+$connection = mysql_connect("localhost","root","carleton2014");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());
@@ -23,7 +25,7 @@ echo "<select name='building' id='building'>";
 
 while ($row = mysql_fetch_array($res)){
   
-  echo "<OPTION value=".$row["BuildingName"].">". $row["BuildingName"]."</OPTION>";
+  echo "<OPTION value='".$row["BuildingName"]."'>". $row["BuildingName"]."</OPTION>";
   
 }
 
@@ -42,27 +44,37 @@ while ($row = mysql_fetch_array($res)){
 
   
 }
+
 echo "</select><br/>";
-
-echo "<input type='submit' value='submit' onclick='buildingHandler'></input>";
-echo "<script language='javascript'>\n";
-echo "function buildingHandler(){";
-echo "var selected= document."
-echo "location.href=forfun.php?building=";
-echo "</script>\n";
-
-
-$building = $_GET["building"];
-$query = "SELECT * FROM building WHERE buildingNAME = '{$building}'";
-$res = mysql_query($query);
-if ($row = mysql_fetch_array($res)){
-  $tbl = mysql_query("SHOW COLUMNS FROM building");
-  
-  while ($rowTbl = mysql_fetch_assoc($tbl)){
-    echo $row[$rowTbl['Field']]."\t";
-    
-  }
-}
-mysql_close($connection);
-echo "</html>";
 ?>
+<div id="text">stuff</div>
+<input type='submit' value='submit' onclick='buildingHandler()'></input>
+<script language='javascript'>
+
+  function buildingHandler(){
+  var selected = document.getElementById('building').value;
+  
+  
+  var xmlhttp = new XMLHttpRequest();
+  var request = "getDataOut.php"//building="+selected;
+  document.getElementById("text").innerHTML =encodeURI(request);
+  xmlhttp.open("GET",encodeURI(request));
+ 
+  xmlhttp.onstatechange =   function handler()
+{
+    if (xmlhttp.readyState == 4 /* complete */) {
+      if (xmlhttp.status == 200) {
+            alert(xmlhttp.responseText);
+        }
+    }
+};
+  xmlhttp.send();
+}
+</script>
+<?php
+
+
+mysql_close($connection);
+
+?>
+</html>
