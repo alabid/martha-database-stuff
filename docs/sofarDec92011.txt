@@ -1,0 +1,103 @@
+   SOME NOTES ABOUT THE AUTOMATION OF THE DOWNLOAD AND COLLATION
+   OF DATA FROM THE WIND TURBINE (OLD STUFF)
+   ================================================================
+   We have automated the collection of data from the wind turbine #1
+   using auto-it windows scripts and python.
+   The auto-it script now runs in the background of Martha Larson's desktop
+   Windows computer as a .exe application.
+   The auto-it script, in the middle of execution, calls the python script
+   to merge the already existing hourly-collated wind turbine data with the
+   most recently retrieved data from the wind turbine. The python script is
+   only called after the computer's modem dials up and connects with the
+   the wind turbine. This is roughly in the middle of a run-through of the
+   auto-it script.
+   This means that should the auto-it script not fully execute, the python
+   script would not run or would only partially run and as a result the
+   file that's populated hourly with data from the wind turbine would
+   not change (or in some weird cases can even go haywire).
+   
+   Problems we've been having with the Automation of the Data Collection of the
+   Wind Turbine
+   ===========================================================================
+   1. When the script is interrupted it fails to complete the automation process.
+   The user would then have to intervene by clicking some window to make a 
+   window in the desktop active. This is because auto-it assumes that the
+   window it's going to perform it's operation on is active. If the window is not
+   active, the execution of the script hangs.
+
+   2. Sometimes auto-it does not run if the dial-up process is interrupted:
+   When someone else on another computer is dialing up to the turbine at the 
+   same time as Martha on her destop computer, the modem fails to dial up and
+   as a result the auto-it script fails to continue.
+   This happens only during the day. At night it almost never happens because
+   people don't usually dial up to the turbines at night.
+   3. And some other times some weird things happen and it just doesn't run.
+
+
+NEW STUFF->
+===========   	      
+STRATEGY FOR NORMALIZING DATA IN THE ENERGY DATA FOLDER
+=======================================================
+1. We created a temporary database called EnergyData.
+   The EnergyData database has almost exactly the same database schema except
+   for some minor additions we made to the schema.
+   This database that we created about a week ago details a design
+    appropriate for reducing the amount of redundancy present in the 
+    EnergyData folder and for easing the analysis and interpretation of the
+    data in the spread sheets hovering around the energy data folder.
+   
+2. Our non-terminal starting directory was the Building Data folder.
+   We went through all the excel files in the directory and inserted all the
+   necessary tuples* of data while getting rid of any redundancies.
+   We ended up inserting all the Data that almost completely describes a 
+   building. So for each building, we insert the Building Type (whether it's
+   residential or otherwise), the Building History (the times the building
+   was renovated or demolished and account for any changes in the square feet
+   of the building afterwards), and other meta-data associated with each 
+   building (like the colleague code of the building, et al.).
+
+* - a tuple of data is usually one line in an excel sheet (excluding the headers).
+
+3. Now we've moved into the "Campus Main_Steam" directory.
+   We've succesfully recorded the amount of steam, oil, and gas that 
+   was used up at the steam production plant and all the necessary meta
+   data associated with this production like the date and time of production 
+   (although only day, month, and year fields were provided so we had to 
+   put dummy values for the hour, minute, and second just to maintain
+   consistency all through the database).
+
+3. For next week, we'd love to focus our attention on "Water" production
+   in the steam plant because a student needs some data about
+   water production in the Steam Plant.
+
+   Note About Inserting Tuples of Data
+   ===================================
+   Before we insert these tuples of data mentioned in (2), we check to see if
+   that tuple of data already exists in the database (in some specific table
+   or is spread across tables).
+   If it's already there, then we don't insert it into the database and maybe
+   take note of where this redundancy originated from.
+   But if the tuple of data is not already there, then we insert into the
+   database. This insertion will possibly span tables in the database because
+   of the heavy presence of foreign keys in our database.
+
+   Goal(s)
+   ======
+   After all the data in the excel sheets have been read into the temporary
+   database, we will then export the data into a behemoth csv file that will
+   hopefully be void of as much redundancy as would the initial collation of
+   all the excel sheets in the Energy Data folder would have had if not for
+   our attempt to eliminate possible redundancies in this (Energy Data) 
+   directory to some extent.
+   The exported .csv file should (and will) have the following properties:	
+   1. It should be easily scrapable (and followable) by applications.
+   2. It should be easy to understand and to draw conclusions from.
+   3. It should be easily partionable so that students and professors
+   alike can partition the .csv file to extract data needed for comps
+   studies or research respectively.
+   3. It should also be easily exportable to Data Visualization 
+   utilities and programs for reading and analysis.
+   4. It should be in as appropriate a format for insertion into the
+   already set-up dataverse.
+   
+

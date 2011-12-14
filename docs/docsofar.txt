@@ -1,0 +1,100 @@
+DOCUMENTATION FOR WHAT WE'VE DONE SO FAR
+========================================
+1. We've an almost complete set of meters.
+   We are trying to match the names of the buildings in the meter list with
+   the names of the buildings in the database.
+2. Then we'd go on to indentify more meters and match them with their 
+   corresponding names.
+
+Directory Structure 
+===================
+1. backups --
+   This folder contains the most recent backup of the database in sql format.
+
+2. MainSteam -
+   This folder contains a txt folder which contains steam plant production
+   logs converted from excel files to txt files.
+   These logs run from 1996 through 2011. But only logs from 2008 through
+   2011 are in the database.
+   It also contains two .php files, putInDB.php and senddata.php.
+   putInDB.php generates objects that contain the type of resource and the
+   amount of the resource measured with other data like the supplierName of 
+   the resource, the unit the resource is measured in, and the BTU Conversion
+   of the measured resource.
+   senddata.php is a pivotal .php file used to insert data from gotten from
+   files like putInDB.php into the database.
+
+3. docs -- contains all sorts of documentation.
+
+4. for-jake -- directory that contains/ and will contain accumulated data
+   that jake Reznick needs for his comps study.
+   As of Wednesday, the 14th of December 2011, the folder for-jake/ has 
+   output.csv that contains the different measurements of resources that Jake
+   needs for his comps study. Some part of Jakes' comps study is focused on
+   water consumption (Loop Water, Domestic Water, Tower Water); the file
+   output.csv contains information about the usage of Loop Water, Domestic 
+   Water, Make-up water, tower water, and remainder water (= Domestic water -
+   loop water - make up water - tower water).
+
+5. And others.
+
+Directory Structure:
+====================
+./MainSteam:
+txt
+
+./MainSteam/txt:
+SteamPlantProductionLog1996.txt	SteamPlantProductionLog2006.txt
+SteamPlantProductionLog1997.txt	SteamPlantProductionLog2007.txt
+SteamPlantProductionLog1998.txt	SteamPlantProductionLog2008.txt
+SteamPlantProductionLog1999.txt	SteamPlantProductionLog2009.txt
+SteamPlantProductionLog2000.txt	SteamPlantProductionLog2010.txt
+SteamPlantProductionLog2001.txt	SteamPlantProductionLog2011.txt
+SteamPlantProductionLog2002.txt	putInDB.php
+SteamPlantProductionLog2003.txt	
+SteamPlantProductionLog2004.txt	senddata.php
+SteamPlantProductionLog2005.txt
+
+./backups:
+EnergyDataBackup.sql
+
+./compiledData:
+building.xlsx			txt
+building_buildingType.xlsx
+
+./compiledData/txt:
+buildingHistory.txt		senddata.php
+building_buildingType.txt
+buildingdata.txt
+
+./docs:
+sofarDec92011.txt
+
+./electricity:
+CAMPUS ELECTRIC.txt		building_buildingType.txt
+CAMPUS STEAM.txt		buildingdata.txt
+CAMPUS WATER.txt		campusData.php
+buildingHistory.txt		senddata.php
+
+./excelcode:
+merge.py	resources.txt
+
+./fields:
+fieldname		housefields.txt
+buildingfields.txt
+
+./for-jake:
+SteamPlantProductionLog2001.txt	SteamPlantProductionLog2009.txt
+SteamPlantProductionLog2002.txt	SteamPlantProductionLog2010.txt
+SteamPlantProductionLog2003.txt	SteamPlantProductionLog2011.txt
+SteamPlantProductionLog2004.txt	output.csv
+SteamPlantProductionLog2005.txt	water_gets.php
+SteamPlantProductionLog2006.txt	water_gets_intodb.php
+SteamPlantProductionLog2007.txt	water_gets_intodb.php
+SteamPlantProductionLog2008.txt
+
+./saveTheData:
+removeDuplicates.py	removeDuplicatesDoc.txt	turbineInfo.au3
+
+./sql:
+EnergyData.sql
