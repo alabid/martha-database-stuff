@@ -1,12 +1,12 @@
-
 <?php
+
 /*
  $tblName -- the name of the table that contains the desired data.
  $colName -- the name of the column (attribute) that is used to select data (in WHERE clause)
  $colVal  -- the value of the attribute above (in WHERE clause)
  $colQuery -- the desired field/column (attribute)
  */
-$connection = mysql_connect("localhost","root","carleton2014");
+$connection = mysql_connect("localhost","root","");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());
@@ -18,11 +18,11 @@ if (!$db_select)
     die("Database select failed:".mysql_error());
   }
 
-/*
+
 function getDataFromDB($tblName,$colName,$colVal,$colQuery){
   /*
     Retrieve the column colQuery in the table tblName where the value of colName is colVal
-  
+  */
   $query = "SELECT {$colQuery} FROM {$tblName} WHERE {$colName}='{$colVal}'";
   $res = mysql_query($query);
   if ($row = mysql_fetch_array($res)){
@@ -76,7 +76,7 @@ function fuelTypeIDToFuelType($fuelTypeID){
     return "";
   }
 }
-*/
+
 function genericQuery($select, $from, $where, $order,$metadata){
   $query = "SELECT ";
   foreach ($select as $column){
@@ -94,7 +94,7 @@ function genericQuery($select, $from, $where, $order,$metadata){
   $query  = substr($query, 0, strrpos($query,"AND"));
   $query = $query." ORDER BY '{$order}'";
   $res = mysql_query($query);
-  echo "the query is ".$query;
+  //echo "the query is ".$query;
   $data = array();
   while ($row = mysql_fetch_array($res)){
     $temp = array();
@@ -107,28 +107,28 @@ function genericQuery($select, $from, $where, $order,$metadata){
     array_push($data,$temp);
   
   }
-  var_dump($data);
-  echo "<br/>";
+  //var_dump($data);
+  //echo "<br/>";
   return $data;
 }
 function test(){
   $from=array("EnergyData","DateObj");
-  $select= array("MeasuredValue","Date","Unit");
+  $select= array("Date","MeasuredValue","Unit");
   $year1= 2010;
-  $year2=2011;
+  $year2= 2011;
   $where = array("Date>=" => $year1,
 		 "Date<="=> $year2,
-		 "Unit ="=> "Klb.",
+	
 		 "FiscalYear="=>$year2
 		 );
   $order= "Date";
   $metadata= array("BuildingName"=>"Burton Hall");
-  genericQuery($select,$from,$where,$order, $metadata);
+  writeIntoCSV(genericQuery($select,$from,$where,$order, $metadata));
 }
 function getConditions($attr,$op,$val){
   if (sizeof($attr)==sizeof($op) && sizeof($op)==sizeof($val)){
     $result = array();
-    for ($i = 0;$i< sizeof($attr)){
+    for ($i = 0;$i< sizeof($attr);$i++){
       $result[$attr." ".$op] = $val;
     }
     return $result;
@@ -145,24 +145,68 @@ function selectEnergy($field){
   $fiscalYear = $field["FiscalYear"];
   $buildingName = meterToBuilding($meterID);
   $fuelType = meterToFuelType($meterID);
-  $select = array("")
+  $select = array("");
   $from = array("EnergyData","DateObj","FuelType","MeterInfo");
   $where = array("Date>="=>$startDate,
 		 "Date<="=>$endDate,
-		 "FiscalYear"=>$fiscalYear,
+		 "FiscalYear"=>$fiscalYear);
 		 
+  $metadata = array();
+  writeIntoCSV(genericQuery($select,$from,$where,$metadata));
 
-);
   
 }
+
 function selectFields($field){
 
   
 
-}*/
+}
+function writeIntoCSV($data){
+  if (sizeof($data)<1){
+    return;
+  }
+ 
+  header("Content-Type:text/csv");
+  header("Content-Disposition:attachment;filename=energyData.csv");
+  $fp = fopen("php://output","w");
+  
+  fputcsv($fp,array_keys($data[0]));
+  
+  for ($i=0;$i< sizeof($data); $i++){
+    fputcsv($fp,$data[$i]);
+    
+  }
+  fclose($fp);
+  
+}
 
-//echo "hello world";
-test();
+function preprocess(){
+  $field = array();
+  if ($_GET["building"]){
+    if (strcmp($_GET["building"],"---")!==0){
+      $field["Building"] = $_GET["building"];
+    }
+  }
+  if ($_GET["startDate"]){ 
+    if (strcmp($_GET["startDate"],"---")!==0){
+      $startDate = $_GET["startDate"];
+    }
+  }
+  if ($_GET["endDate"]){ 
+    if (strcmp($_GET["endDate"],"---")!==0){
+      $startDate = $_GET["endDate"];
+    }
+  }
+  $fuelType = $_GET["fuelType"];
+  
+  $fiscalYear = $_GET["fiscalYear"]; 
+  
+}
+
+
+preprocess();
+//test();
 /*
 $building = $_GET["building"];
 
