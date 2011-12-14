@@ -99,11 +99,11 @@ function readAndPutInArray($contents) {
   $start = false;
   $formerline = "";
   $month = "";
-  $valueIndex = 5; // for oil
+  $valueIndex = 1; // for steam
   
   $BTUConv = array(
 		 "steam" => 1000, /* 1 MB/HR => 1.000MBTU/Unit */
-		 "oil" => 0.142e6  // in MMBTU's
+		 "oil" => 0.142  // in MMBTU's
 		 );
 
   $units = array(
@@ -111,7 +111,7 @@ function readAndPutInArray($contents) {
 	       "oil" => "GAL"
 		 );
 
-  $req_headers = array("oil");
+  $req_headers = array("steam");
 
   $entry = array("Day" => null,
 		 "Month" => null,
@@ -123,7 +123,7 @@ function readAndPutInArray($contents) {
 		 "BTUConversion" => null,
 		 "SupplierName" => "Xcel",
 		 "BuildingName" => "Facilities Building/ Steam Plant",
-		 "Unit" => $units["oil"],
+		 "Unit" => "Klb.",
 		 "Type" => null
 		 );
 
@@ -186,7 +186,7 @@ function resetEntry($entry) {
 		 "SupplierName" => "Xcel",
 		 "BuildingName" => "Facilities Building/ Steam Plant",
 		 "Type" => null,
-		 "Unit" => $units["oil"]
+		 "Unit" => "Klb."
 		 );
 }
 

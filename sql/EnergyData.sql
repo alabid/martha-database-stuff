@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Dec 06, 2011 at 07:10 PM
+-- Generation Time: Dec 06, 2011 at 10:48 PM
 -- Server version: 5.1.44
 -- PHP Version: 5.3.1
 
@@ -38,10 +38,10 @@ CREATE TABLE IF NOT EXISTS `Address` (
 -- --------------------------------------------------------
 
 --
--- Table structure for table `Building`
+-- Table structure for table `building`
 --
 
-CREATE TABLE IF NOT EXISTS `Building` (
+CREATE TABLE IF NOT EXISTS `building` (
   `BuildingID` int(11) NOT NULL AUTO_INCREMENT,
   `BuildingName` varchar(256) NOT NULL,
   `BuildingCode` varchar(8) NOT NULL,
@@ -49,10 +49,25 @@ CREATE TABLE IF NOT EXISTS `Building` (
   `BuildingSF` double DEFAULT NULL,
   `YearBuilt` year(4) DEFAULT NULL,
   `YearBought` year(4) DEFAULT NULL,
-  `YearDemolished` year(4) DEFAULT NULL,
+  `YearDemolished` varchar(64) DEFAULT NULL,
   PRIMARY KEY (`BuildingID`),
   KEY `BuildingAddressID` (`BuildingAddressID`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `BuildingHistory`
+--
+
+CREATE TABLE IF NOT EXISTS `BuildingHistory` (
+  `HistoryID` int(11) NOT NULL AUTO_INCREMENT,
+  `BldgBldgTypeID` int(11) DEFAULT NULL,
+  `SquareFeet` double DEFAULT NULL,
+  `YearChanged` year(4) NOT NULL,
+  PRIMARY KEY (`HistoryID`),
+  KEY `BldgBldgTypeID` (`BldgBldgTypeID`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -73,11 +88,13 @@ CREATE TABLE IF NOT EXISTS `BuildingType` (
 --
 
 CREATE TABLE IF NOT EXISTS `Building_BuildingType` (
+  `BldgBldgTypeID` int(11) NOT NULL AUTO_INCREMENT,
   `BuildingID` int(11) DEFAULT NULL,
   `BuildingTypeID` int(11) DEFAULT NULL,
+  PRIMARY KEY (`BldgBldgTypeID`),
   KEY `BuildingID` (`BuildingID`),
   KEY `BuildingTypeID` (`BuildingTypeID`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB DEFAULT CHARSET=latin1 AUTO_INCREMENT=1 ;
 
 -- --------------------------------------------------------
 
@@ -285,17 +302,23 @@ ALTER TABLE `Address`
   ADD CONSTRAINT `address_ibfk_1` FOREIGN KEY (`CityID`) REFERENCES `city` (`CityID`) ON DELETE NO ACTION;
 
 --
--- Constraints for table `Building`
+-- Constraints for table `building`
 --
-ALTER TABLE `Building`
+ALTER TABLE `building`
   ADD CONSTRAINT `building_ibfk_1` FOREIGN KEY (`BuildingAddressID`) REFERENCES `address` (`AddressID`) ON DELETE NO ACTION;
+
+--
+-- Constraints for table `BuildingHistory`
+--
+ALTER TABLE `BuildingHistory`
+  ADD CONSTRAINT `buildinghistory_ibfk_1` FOREIGN KEY (`BldgBldgTypeID`) REFERENCES `buildinghistory` (`BldgBldgTypeID`) ON DELETE NO ACTION;
 
 --
 -- Constraints for table `Building_BuildingType`
 --
 ALTER TABLE `Building_BuildingType`
-  ADD CONSTRAINT `building_buildingtype_ibfk_2` FOREIGN KEY (`BuildingTypeID`) REFERENCES `buildingtype` (`BuildingTypeID`) ON DELETE NO ACTION,
-  ADD CONSTRAINT `building_buildingtype_ibfk_1` FOREIGN KEY (`BuildingID`) REFERENCES `building` (`BuildingID`) ON DELETE NO ACTION;
+  ADD CONSTRAINT `building_buildingtype_ibfk_1` FOREIGN KEY (`BuildingID`) REFERENCES `building` (`BuildingID`) ON DELETE NO ACTION,
+  ADD CONSTRAINT `building_buildingtype_ibfk_2` FOREIGN KEY (`BuildingTypeID`) REFERENCES `buildingtype` (`BuildingTypeID`) ON DELETE NO ACTION;
 
 --
 -- Constraints for table `Building_Room`
