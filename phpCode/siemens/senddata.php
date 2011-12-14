@@ -248,7 +248,9 @@ function createDate($data){
   if ($data["CalendarType"]){
     $calendarType = $data["CalenderType"];
   }else{
-    if (isBreak($data)){
+    if (true){
+      $calendarType = "Historical Data";
+    }else if (isBreak($data)){
       $calendarType = "break";
     }else if (isHoliday($data)){
       $calendarType = "holiday";
@@ -333,23 +335,26 @@ function addEnergy($data){
   }
   $conversion = $data["BTUConversion"];
   $unit = $data["Unit"];
-  //$type = $data["Type"];
-  /*$buildingID = $data["BuildingID"];
-  if (!is_numeric($buildingID)){
-    $buildingName = $data["BuildingName"];
-    $buildingID = getDataFromDB("building","BuildingName",$buildingName,"BuildingID");
+  $duration = $data["Duration"];
+  $duration = (strcmp(strtolower($duration),"hourly")==0) ? "Hourly" : 
+    ((strcmp(strtolower($duration),"daily")==0) ? "Daily": 
+     ((strcmp(strtolower($duration),"monthly")==0) ? "Monthly":
+      ((strcmp(strtolower($duration),"annual")==0) ? "Annual" : 
+       ((strcmp(strtolower($duration),"5 mins")==0 || strcmp(strtolower($duration),"5mins")==0) ? "5mins":
+	((strcmp(strtolower($duration),"10 mins")==0 || strcmp(strtolower($duration),"10mins")==0) ? "10mins": null)))));
+  /*forget to specify duration?
+    Temporary solution: Daily.
+   */
+  if ($duration===null){
+    $duration = "Daily";
   }
-  if ($buildingID ==""){
-    echo "Error in finding building ID <br/>";
-    return;
-    }*/
 
   $meterID = addMeter($data);
   if ($meterID==="" || $meterID===null){
     echo "Error in finding meter ID<br/>.";
     return;
   }
-  $query = "SELECT EnergyDataID, BTUConversion FROM EnergyData WHERE Date='{$date}' AND MeterID = '{$meterID}' AND MeasuredValue='{$measuredValue}' AND Unit='{$unit}'";
+  $query = "SELECT EnergyDataID, BTUConversion FROM EnergyData WHERE Date='{$date}' AND Duration='{$duration}' AND MeterID = '{$meterID}' AND MeasuredValue='{$measuredValue}' AND Unit='{$unit}'";
   $res = mysql_query($query);
   if ($row = mysql_fetch_array($res)){
     if ($row["BTUConversion"]!=$conversion && $conversion!==null && $conversion!==""){
@@ -361,9 +366,9 @@ function addEnergy($data){
 
   }
   if ($conversion!==null && $conversion!==""){
-    $query = "INSERT INTO EnergyData (Date, MeterID, MeasuredValue, Unit, BTUConversion) VALUES ('{$date}', '{$meterID}', '{$measuredValue}', '{$unit}','{$conversion}')";
+    $query = "INSERT INTO EnergyData (Date, Duration, MeterID, MeasuredValue, Unit, BTUConversion) VALUES ('{$date}', '{$duration}','{$meterID}', '{$measuredValue}', '{$unit}','{$conversion}')";
   }else{
-    $query = "INSERT INTO EnergyData (Date, MeterID, MeasuredValue, Unit) VALUES ('{$date}', '{$meterID}', '{$measuredValue}', '{$unit}')";
+    $query = "INSERT INTO EnergyData (Date, Duration, MeterID, MeasuredValue, Unit) VALUES ('{$date}','{$duration}', '{$meterID}', '{$measuredValue}', '{$unit}')";
   }
   mysql_query($query);
   echo "Query is".$query."<br/>";
@@ -649,6 +654,6 @@ function main(){
   
 }
 //test();
-//main();
+main();
 mysql_close($connection);
 ?>

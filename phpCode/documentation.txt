@@ -1,0 +1,16 @@
+siemens folder has all siemens data and the php script to insert those data to the database.
+
+To insert those data, use campusData.php. Inside campusData.php, there are three functions that add electricity, campus water and campus steam:
+1/    addElectricity();
+2/    addCampusWater();
+3/    addCampusSteam();
+
+As the name indicates, each function handles one type of energy. 
+
+Notes for future programmers:
+1.  All these three functions subsequently call siemensEnergyHandler by their handlers, which calls addEnergy function from senddata.php.
+2. campusData.php is tight to the format provided by "CAMPUS ELECTRIC.txt", "CAMPUS STEAM.txt" and "CAMPUS WATER.txt". BuildingName should match the name in the databse.
+One way to make the name matching easier is to write query using LIKE and handle results approriately. Due to time constraint, we did not have time to make such modification.
+
+
+
