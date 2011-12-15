@@ -528,9 +528,9 @@ function addFuelType($data){
   if ($type==="" || $type ===null){
     return "";
   }
-  $fuelTypeID = getDataFromDB("FuelType","Type",$type,"FuelTypeID");
+  $fuelTypeID = getDataFromDB("FuelType","FuelType",$type,"FuelTypeID");
   if ($fuelTypeID===""){
-    $query = "INSERT INTO FuelType (Type) VALUES('{$type}')";
+    $query = "INSERT INTO FuelType (FuelType) VALUES('{$type}')";
     echo "<br/>Fuel Type query: ".$query."!<br/>";
     mysql_query($query);
     $fuelTypeID = mysql_insert_id();

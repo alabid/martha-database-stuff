@@ -138,30 +138,20 @@ function getConditions($attr,$op,$val){
 }
 
 function selectEnergy($field){
-  $startDate = $field["StartDate"];
-  $endDate=  $field["EndDate"];
-  $duration = $field["Duration"];
-  $meterID = $field["MeterID"];
-  $fiscalYear = $field["FiscalYear"];
+  
   $buildingName = meterToBuilding($meterID);
   $fuelType = meterToFuelType($meterID);
-  $select = array("");
-  $from = array("EnergyData","DateObj","FuelType","MeterInfo");
-  $where = array("Date>="=>$startDate,
-		 "Date<="=>$endDate,
-		 "FiscalYear"=>$fiscalYear);
-		 
+  $select = array("Date","FiscalYear","BuildingName","FuelType","MeasuredValue","Unit","BTUConversion");
+  $from = array("EnergyData","DateObj","FuelType","MeterInfo","building");
+  $where = $field;
+  $order = "Date, MeterID";
   $metadata = array();
-  writeIntoCSV(genericQuery($select,$from,$where,$metadata));
+  writeIntoCSV(genericQuery($select,$from,$where,$order,$metadata));
 
   
 }
 
-function selectFields($field){
 
-  
-
-}
 function writeIntoCSV($data){
   if (sizeof($data)<1){
     return;
@@ -184,28 +174,34 @@ function writeIntoCSV($data){
 function preprocess(){
   $field = array();
   if ($_GET["building"]){
-    if (strcmp($_GET["building"],"---")!==0){
-      $field["Building"] = $_GET["building"];
+    if (strcmp($_GET["building"],"all")!==0){
+      $field["BuildingName="] = $_GET["building"];
     }
   }
-  if ($_GET["startDate"]){ 
-    if (strcmp($_GET["startDate"],"---")!==0){
-      $startDate = $_GET["startDate"];
+  if ($_GET["startDateYear"]){ 
+    if (strcmp($_GET["startDateYear"],"---")!==0){
+      $field["Date>="] = $_GET["startDateYear"];
     }
   }
-  if ($_GET["endDate"]){ 
-    if (strcmp($_GET["endDate"],"---")!==0){
-      $startDate = $_GET["endDate"];
+  if ($_GET["endDateYear"]){ 
+    if (strcmp($_GET["endDateYear"],"---")!==0){
+      $field["Date<="] = "".((int)$_GET["endDateYear"]+1);
     }
   }
-  $fuelType = $_GET["fuelType"];
+  if ($_GET["fuelType"]){
+    if (strcmp($_GET["fuelType"],"all")!==0){
+      $field["FuelType="] = $_GET["fuelType"];
+    }
+  }
+  if ($_GET["fiscalYear"]){
+    $field["fiscalYear="] = $_GET["fiscalYear"];
+  }
   
-  $fiscalYear = $_GET["fiscalYear"]; 
-  
+  return $field;
 }
 
 
-preprocess();
+selectEnergy(preprocess());
 //test();
 /*
 $building = $_GET["building"];
