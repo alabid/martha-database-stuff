@@ -79,6 +79,7 @@ function fuelTypeIDToFuelType($fuelTypeID){
 
 function genericQuery($select, $from, $where, $order,$metadata){
   $query = "SELECT ";
+  
   foreach ($select as $column){
     $query = $query."".$column.",";
   }
@@ -87,11 +88,14 @@ function genericQuery($select, $from, $where, $order,$metadata){
     $query = $query."".$table." NATURAL JOIN ";
   }
   $query  = substr($query, 0, strrpos($query,"NATURAL JOIN"));
-  $query = $query." WHERE ";
-  foreach (array_keys($where) as $condition){
-    $query = $query."".$condition."'{$where[$condition]}' AND ";
+  if (sizeof($where)!=0){
+    $query = $query." WHERE ";
+  
+    foreach (array_keys($where) as $condition){
+      $query = $query."".$condition."'{$where[$condition]}' AND ";
+    }
+    $query  = substr($query, 0, strrpos($query,"AND"));
   }
-  $query  = substr($query, 0, strrpos($query,"AND"));
   $query = $query." ORDER BY '{$order}'";
   $res = mysql_query($query);
   //echo "the query is ".$query;
@@ -137,13 +141,14 @@ function getConditions($attr,$op,$val){
   return null;
 }
 
-function selectEnergy($field){
+function selectEnergy($columns,$constraints){
   
   $buildingName = meterToBuilding($meterID);
   $fuelType = meterToFuelType($meterID);
-  $select = array("Date","FiscalYear","BuildingName","FuelType","MeasuredValue","Unit","BTUConversion");
+  $select = $columns; 
+    //array("Date","FiscalYear","BuildingName","FuelType","MeasuredValue","Unit","BTUConversion");
   $from = array("EnergyData","DateObj","FuelType","MeterInfo","building");
-  $where = $field;
+  $where = $constraints;
   $order = "Date, MeterID";
   $metadata = array();
   writeIntoCSV(genericQuery($select,$from,$where,$order,$metadata));
@@ -171,7 +176,7 @@ function writeIntoCSV($data){
   
 }
 
-function preprocess(){
+function getConstraints(){
   $field = array();
   if ($_GET["building"]){
     if (strcmp($_GET["building"],"all")!==0){
@@ -194,14 +199,25 @@ function preprocess(){
     }
   }
   if ($_GET["fiscalYear"]){
-    $field["fiscalYear="] = $_GET["fiscalYear"];
+    $field["FiscalYear="] = $_GET["fiscalYear"];
   }
-  
+   if ($_GET["weekday"]){
+    $field["Weekday="] = $_GET["weekday"];
+   }
+  //var_dump($field);
+  return $field;
+}
+function getColumns(){
+  $field = array();
+  foreach (array_keys($_GET) as $column){
+    if (strcmp($_GET[$column],"yes")==0){
+      array_push($field,$column);
+    }
+  }
   return $field;
 }
 
-
-selectEnergy(preprocess());
+selectEnergy(getColumns(),getConstraints());
 //test();
 /*
 $building = $_GET["building"];

@@ -1,9 +1,13 @@
 <html>
+<head>
+<?php
+echo "<title>Energy Data User Interface</title>";
+?>
 <script language='JavaScript' src='jQuery.js'></script>
 <script language='JavaScript' src='option.js'></script>
+<link rel="stylesheet" type="text/css" href="simpleInterface.css" />
+</head>
 <?php
-
-echo "<head><title>Energy Data User Interface</title></head>";
 echo "<body>";
 echo "<h1>Energy Data Simple User Interface</h1>";
 
@@ -25,7 +29,7 @@ echo "Select the number of columns:     ";
 
 
 echo "<select name='columns' id='columns' onchange ='addColumns(this)' >";
-  for ($i=0;$i<8;$i++){
+  for ($i=0;$i<11;$i++){
 
   echo "<OPTION value='".$i."'>". $i."</OPTION>";
 
@@ -48,14 +52,13 @@ echo "<select name='constraints' id='constraints' onchange ='addConstraints(this
   
     }
 
-echo "</select></p><br/>";
+echo "</select></p>";
 echo "<div id='forConstraints'></div>";
-
 
 
 ?>
 
-<input type='submit' value='submit' onclick='dataHandler()'></input>
+<input type='submit' value='Download Data as CSV' onclick='dataHandler()'></input>
 
 <?php
 
