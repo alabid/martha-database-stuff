@@ -4,18 +4,18 @@ function selectColumns(){
     for (var i=0;i<columns;i++){
 	var temp =  document.getElementById('colsSel'+i).value;
 	url += temp +"=yes&";
-
+	
     }
     url = url.substring(0,url.length-1);
     return url;
 }
 function dataHandler(){
     var url = "";
-   
+    
     url += selectColumns();
- 
+    
     var cons = selectConstraints();
- 
+    
     if (cons!=false || parseInt(document.getElementById("constraints").value)==0){
 	url +="&"+cons;
 	
@@ -27,12 +27,16 @@ function selectConstraints(){
     var url = "";
     var startYear = false;
     var endYear = false;
+    var startMonth = false;
+    var endMonth = false;
+    var startDay = false;
+    var endDay = false;
     var constraints = parseInt(document.getElementById("constraints").value);
-
+    
     for (var i=0;i<constraints;i++){
 	var temp =  document.getElementById('consSel'+i).value;
 
-
+	
 	if (temp.toString()!="startDate" && temp.toString()!="endDate"){
 	    url += temp+"=";
 	    url += document.getElementById(temp).value;
@@ -46,26 +50,58 @@ function selectConstraints(){
 		}
 	    }
 	}else{
-	    url += temp+"Year=";
+	    
 	    var year = document.getElementById(temp+"Year").value;
+	    var month = document.getElementById(temp+"Month").value;
+	    var day = document.getElementById(temp+"Day").value;
+	    url += temp+"Year="+year+"&"+temp+"Month="+month+"&"+temp+"Day="+day;
+	    
+	    
 	    if (temp.toString()=="startDate"){
+		
 		startYear = parseInt(year);
-		if (endYear && startYear>endYear){
-		    window.alert("Beginning year cannot be later than end year.");
-		    return false;
-		}
-	    }else if  (temp.toString()=="endDate"){
+		startMonth = parseInt(month);
+		startDay = parseInt(day);
+		if (endYear){
+		    if (startYear>endYear){
+			window.alert("Beginning date cannot be later than end date.");
+			return false;
+		    }else if (endMonth){
+			if (startMonth>endMonth){
+			    window.alert("Beginning date cannot be later than end date.");
+			    return false;
+			}else if (endDay){
+			    if (startDay>endDay){
+				window.alert("Beginning date cannot be later than end date.");
+				return false;
+			    } 				    
+			} //endif endDay
+		    } // endif endMonth
+		} // endif endYear
+	    }else if (temp.toString()=="endDate"){
 		endYear = parseInt(year);
-		if (startYear && startYear>endYear){
-		    window.alert("Beginning year cannot be later than end year.");
-		    return false;
-		}
-	    }
-	    url += year;
-	
-	}
+		endMonth = parseInt(month);
+		endDay = parseInt(day);
+		if (startYear){
+		    if (startYear>endYear){
+			window.alert("Beginning date cannot be later than end date.");
+			return false;
+		    }else if (startMonth){
+			if (startMonth>endMonth){
+			    window.alert("Beginning date cannot be later than end date.");
+			    return false;
+			}else if (startDay){
+			    if (startDay>endDay){
+				window.alert("Beginning date cannot be later than end date.");
+				return false;
+			    } // endif
+			} // endif startDay
+		    } // endif startMonth	    
+		} // endif startYear
+	    } // endif endDate 	    
+	} // end condition
 	url += "&";
-    }
+    } // end for loop
     
     url = url.substring(0,url.length-1);
     return url;
@@ -88,7 +124,7 @@ function addColumns(selection){
     var colsNum = parseInt(selection.value);
     columnsDiv.innerHTML = "<div class='attributes' id='colsDiv'>";
     for (var i = 0;i<colsNum;i++){
-
+	
 	columnsDiv.innerHTML+="Column "+(i+1)+" :<select id='colsSel"+i+
 	    "' onchange='columnHandler(this,"+i+")'><option VALUE='null'> --- </option></select>";
 	if (i%3==2){
@@ -107,10 +143,10 @@ function addOneColumn(id){
     if (id < parseInt(document.getElementById("columns").value)){
 	var device = document.getElementById("colsSel"+id);
 	//alert(document.getElementById("colsSel"+id).innerHTML);
-
+	
 	
 	newString ="<option VALUE='null'> --- </option>";
-
+	
 	if (jQuery.inArray("Date",curCols)==-1 || jQuery.inArray("Date",curCols)>=id){
 	    newString+="<OPTION VALUE='Date'>Date</OPTION>";
 	}
@@ -130,9 +166,9 @@ function addOneColumn(id){
 	    newString+="<OPTION VALUE='BuildingName'>Building Name</OPTION>";
 	}
 	/*
-	if (jQuery.inArray("BuildingType",curCols)==-1 || jQuery.inArray("BuildingType",curCols)>=id){
-	    newString+="<OPTION VALUE='BuildingType'>Building Type</OPTION>";
-	}*/
+	  if (jQuery.inArray("BuildingType",curCols)==-1 || jQuery.inArray("BuildingType",curCols)>=id){
+	  newString+="<OPTION VALUE='BuildingType'>Building Type</OPTION>";
+	  }*/
 	if (jQuery.inArray("MeasuredValue",curCols)==-1 || jQuery.inArray("MeasuredValue",curCols)>=id){
 	    newString+="<OPTION VALUE='MeasuredValue'>Measured Value</OPTION>";
 	}
@@ -149,7 +185,7 @@ function addOneColumn(id){
     }
 }
 
-    
+
 /*
   Add options for one constraint.
 */
@@ -157,10 +193,10 @@ function addOneConstraint(id){
     if (id < parseInt(document.getElementById("constraints").value)){
 	var device = document.getElementById("consDiv"+id);
 	var newString = "Constraint "+(id+1)+" :<select id='consSel"+id+
-	    "' onclick='optionHandler(this,"+id+")'>";
+	    "' onchange='optionHandler(this,"+id+")'>";
 	//alert(newString);
 	newString +="<option VALUE='null'> --- </option>";
-
+	
 	if (jQuery.inArray("startDate",curCons)==-1 || jQuery.inArray("startDate",curCons)>=id){
 	    newString+="<OPTION VALUE='startDate'>Beginning Date</OPTION>";
 	}
@@ -187,6 +223,61 @@ function addOneConstraint(id){
 	device.innerHTML = newString;
     }
 }
+function calculateDay(selection){
+    var year = document.getElementById(selection+"Year").value;
+    var month = document.getElementById(selection+"Month").value;
+    var daySel = document.getElementById(selection+"Day");
+    daySel.innerHTML = "Day: <select id='"+selection+"Day'>"+ "<OPTION value='null'>All days</OPTION>";
+    if (year.toString() == "null" || month.toString() == "null"){
+	daySel.innerHTML += "</select>";
+	return;
+    }
+    year = parseInt(year);
+    month = parseInt(month);
+    var day = 0;
+    switch (month)
+    {
+    case 1:
+    case 3:
+    case 5:
+    case 7:
+    case 8:
+    case 10:
+    case 12:
+	day = 31;
+	break;
+    case 4:
+    case 6:
+    case 9:
+    case 11:
+	day = 30;
+	break;
+    case 2:
+	if (year%100==0){
+	    if (year%400==0){
+		day = 29;
+	    }else{
+		day = 28;
+	    }
+	}else{
+	    if (year%4==0){
+		day = 29;
+	    }else{
+		day = 28;
+	    }
+	}
+	break;
+    default:
+	window.alert("Internal error.");
+	return ;
+    }
+   
+   
+    for (var i = 1;i<=day;i++){
+	daySel.innerHTML += "<OPTION value='"+i+"'>"+i+"</OPTION>";
+    }
+    daySel.innerHTML += "</select>";
+}
 function optionHandler(selection,id){
     var curDiv = document.getElementById("moreOptionDiv"+id);
     curCons[id] = selection.value;
@@ -194,18 +285,38 @@ function optionHandler(selection,id){
     curDiv.innerHTML="<div class='options' id='moreOption"+id+"'>";
     var option="";
     if (selection.value.toString() == "startDate"){
-	option = "Year: <select id='startDateYear'>";
+	option = "Year: <select id='startDateYear' onchange='calculateDay("+'"startDate"'+")'>";
+	option +="<OPTION value='null'>All years</OPTION>";
 	for (var i=2011;i>=1990;i--){
+	    option += "<OPTION value='"+i+"'>"+i+"</OPTION>";
+	}
+	option += "</select>";
+	option += "Month: <select id='startDateMonth' onchange='calculateDay("+'"startDate"'+")'>";
+	option += "<OPTION value='null'>All months</OPTION>";
+	for (var i=1;i<=12;i++){
+	    option += "<OPTION value='"+i+"'>"+i+"</OPTION>";
+	}
+	option += "</select>";
+	option += "Day: <select id='startDateDay'>";
+	option += "<OPTION value='null'>All days</OPTION>";
+	option += "</select>";
+    }else if (selection.value.toString() == "endDate"){
+	option = "Year: <select id='endDateYear' onchange='calculateDay("+'"endDate"'+")'>";
+	option +="<OPTION value='null'>All years</OPTION>";
+	for (var i=2012;i>=1990;i--){
 	    option+="<OPTION value='"+i+"'>"+i+"</OPTION>";
 	}
-	option+="</select>";
-    }
-    else if (selection.value.toString() == "endDate"){
-	option = "Year: <select id='endDateYear'>";
-	for (var i=2011;i>=1990;i--){
+	option += "</select>";
+	option += "Month: <select id='endDateMonth' onchange='calculateDay("+'"endDate"'+")'>";
+	option += "<OPTION value='null'>All months</OPTION>";
+	for (var i=1;i<=12;i++){
 	    option+="<OPTION value='"+i+"'>"+i+"</OPTION>";
 	}
-	option+="</select>";
+	option += "</select>";
+	option += "Day: <select id='endDateDay'>";
+	option += "<OPTION value='null'>All days</OPTION>";
+	option += "</select>";
+	
     }else if (selection.value.toString() == "fiscalYear"){
 	option = "Year: <select id='fiscalYear'>";
 	for (var i=2012;i>=1990;i--){

@@ -1,12 +1,11 @@
 <?php
-
 /*
  $tblName -- the name of the table that contains the desired data.
  $colName -- the name of the column (attribute) that is used to select data (in WHERE clause)
  $colVal  -- the value of the attribute above (in WHERE clause)
  $colQuery -- the desired field/column (attribute)
  */
-$connection = mysql_connect("localhost","root","");
+$connection = mysql_connect("localhost","root","carleton2014");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());
@@ -78,7 +77,7 @@ function fuelTypeIDToFuelType($fuelTypeID){
 }
 
 function genericQuery($select, $from, $where, $order,$metadata){
-  $query = "SELECT ";
+  $query = "SELECT DISTINCT ";
   
   foreach ($select as $column){
     $query = $query."".$column.",";
@@ -178,21 +177,39 @@ function writeIntoCSV($data){
 
 function getConstraints(){
   $field = array();
+  
   if ($_GET["building"]){
     if (strcmp($_GET["building"],"all")!==0){
       $field["BuildingName="] = $_GET["building"];
     }
   }
   if ($_GET["startDateYear"]){ 
-    if (strcmp($_GET["startDateYear"],"---")!==0){
-      $field["Date>="] = $_GET["startDateYear"];
+    if (strcmp($_GET["startDateYear"],"null")!==0){
+      if ($_GET["startDateMonth"] && (strcmp($_GET["startDateMonth"],"null")!==0)){
+	if ($_GET["startDateDay"] && (strcmp($_GET["startDateDay"],"null")!==0)){
+	  $field["Date>="] =  date('Y-m-d H:i:s',mktime(0,0,0,(int)$_GET["startDateMonth"],(int)$_GET["startDateDay"],(int)$_GET["startDateYear"]));
+	}else{
+	  $field["Date>="] =  date('Y-m-d H:i:s',mktime(0,0,0,(int)$_GET["startDateMonth"],1,(int)$_GET["startDateYear"]));
+	}
+      }else{
+	$field["Date>="] =  date('Y-m-d H:i:s',mktime(0,0,0,1,1,(int)$_GET["startDateYear"]));
+      }
     }
-  }
-  if ($_GET["endDateYear"]){ 
-    if (strcmp($_GET["endDateYear"],"---")!==0){
-      $field["Date<="] = "".((int)$_GET["endDateYear"]+1);
+  }  
+
+   if ($_GET["endDateYear"]){ 
+    if (strcmp($_GET["endDateYear"],"null")!==0){
+      if ($_GET["endDateMonth"] && (strcmp($_GET["endDateMonth"],"null")!==0)){
+	if ($_GET["endDateDay"] && (strcmp($_GET["endDateDay"],"null")!==0)){
+	  $field["Date<"] =  date('Y-m-d H:i:s',mktime(0,0,0,(int)$_GET["endDateMonth"],(int)$_GET["endDateDay"]+1,(int)$_GET["endDateYear"]));
+	}else{
+	  $field["Date<"] =  date('Y-m-d H:i:s',mktime(0,0,0,(int)$_GET["endDateMonth"]+1,1,(int)$_GET["endDateYear"]));
+	}
+      }else{
+	$field["Date<"] =  date('Y-m-d H:i:s',mktime(0,0,0,1,1,(int)$_GET["endDateYear"])+1);
+      }
     }
-  }
+   }  
   if ($_GET["fuelType"]){
     if (strcmp($_GET["fuelType"],"all")!==0){
       $field["FuelType="] = $_GET["fuelType"];
