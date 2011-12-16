@@ -147,8 +147,14 @@ function addOneColumn(id){
 	
 	newString ="<option VALUE='null'> --- </option>";
 	
+	if (jQuery.inArray("Date(Date)",curCols)==-1 || jQuery.inArray("Date(Date)",curCols)>=id){
+	    newString+="<OPTION VALUE='Date(Date)'>Date</OPTION>";
+	}
+	if (jQuery.inArray("Time(Date)",curCols)==-1 || jQuery.inArray("Time(Date)",curCols)>=id){
+	    newString+="<OPTION VALUE='Time(Date)'>Time</OPTION>";
+	}
 	if (jQuery.inArray("Date",curCols)==-1 || jQuery.inArray("Date",curCols)>=id){
-	    newString+="<OPTION VALUE='Date'>Date</OPTION>";
+	    newString+="<OPTION VALUE='Date'>Date+Time</OPTION>";
 	}
 	if (jQuery.inArray("FiscalYear",curCols)==-1 || jQuery.inArray("FiscalYear",curCols)>=id){
 	    newString+="<OPTION VALUE='FiscalYear'>Fiscal Year</OPTION>";
@@ -227,13 +233,18 @@ function calculateDay(selection){
     var year = document.getElementById(selection+"Year").value;
     var month = document.getElementById(selection+"Month").value;
     var daySel = document.getElementById(selection+"Day");
-    daySel.innerHTML = "Day: <select id='"+selection+"Day'>"+ "<OPTION value='null'>All days</OPTION>";
+   
     if (year.toString() == "null" || month.toString() == "null"){
-	daySel.innerHTML += "</select>";
 	return;
     }
     year = parseInt(year);
     month = parseInt(month);
+    
+    if (month!=2 && daySel.value.toString()!="null"){
+	return;
+    }
+    daySel.innerHTML = "<OPTION value='null'>All days</OPTION>";
+   
     var day = 0;
     switch (month)
     {
@@ -276,7 +287,7 @@ function calculateDay(selection){
     for (var i = 1;i<=day;i++){
 	daySel.innerHTML += "<OPTION value='"+i+"'>"+i+"</OPTION>";
     }
-    daySel.innerHTML += "</select>";
+  
 }
 function optionHandler(selection,id){
     var curDiv = document.getElementById("moreOptionDiv"+id);

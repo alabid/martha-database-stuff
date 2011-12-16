@@ -11,7 +11,7 @@ echo "<title>Energy Data User Interface</title>";
 echo "<body>";
 echo "<h1>Energy Data Simple User Interface</h1>";
 
-$connection = mysql_connect("localhost","root","carleton2014");
+$connection = mysql_connect("localhost","root","");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());

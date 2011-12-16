@@ -5,7 +5,7 @@
  $colVal  -- the value of the attribute above (in WHERE clause)
  $colQuery -- the desired field/column (attribute)
  */
-$connection = mysql_connect("localhost","root","carleton2014");
+$connection = mysql_connect("localhost","root","");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());
