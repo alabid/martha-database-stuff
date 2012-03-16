@@ -1,0 +1,207 @@
+THE ENERGYDATA DATABASE SCHEMA
+==============================
+The energy data database is currently stored on the XAMPP server on one or
+both of the machines in Paula's office. 
+Note: Although, the EnergyData databases might have the same name and structure
+might not have the most up-to-date data. To put the most up-to-date data, we'll
+have to sync both computers in some way using the "master-slave" architecture
+for MySQL. This is possible but burdensome to set up and maintain. For now, the
+only way we sync. the data between both computers is to regularly manually
+update the internal schema of the databases sitting in both computers. We do 
+this by exporting the SQL schema out of the database on one computer (this MUST
+be the most updated version so we don't lose information). Then we feed in this
+exported MySQL schema file to the other "not-so-updated" database on the other
+computer.
+We did this last on the 26th December 2011.
+This "backup" file is on moodle and is called "EnergyData.sql."
+
+DATABASE TABLES
+===============
+
+ADDRESS
+------
+This table stores the address of a building on or off campus. We use this table
+to store the street number and street name of all buildings on campus and also
+the address of any other external suppliers or parties that interact with
+the environmental dynamics at Carleton (such as suppliers, manufacturers).
+
+This table has four fields:
+AddressID -- auto-increment field
+StreetAddres -- actual address to store; contains street number and street name.
+CityID -- FOREIGN KEY that references the CITY table. 
+ZipCode -- ZipCode of current address. All buildings in Carleton and around
+Northfield have the same ZipCode, 55057.
+
+BUILDING
+--------
+This table has four fields (which are all self-explanatory):
+BuildingID -- auto-increment field
+BuildingName -- name of building
+BuildingCode -- EMPTY for now (this should store the colleague code for 
+	     each building).
+BuildingAddressID -- FOREIGN KEY that references the addressID of the ADDRESS 
+TABLE
+
+BUILDINGHISTORY
+---------------
+This table serves us well when we need to record information about how and when
+a building has changed. We record this information by storing the new square
+feet of the building and year changed (as well as some metadata with the 
+building so that we can link back to it at the right time).
+This table has four fields:
+HistoryID -- auto-increment filed
+BuildingID -- FOREIGN KEY that references the building table.
+SquareFeet -- records the current square feet of the building whose information
+	   is stored at the current tuple (row).
+YearChanged -- Records the year when the building was demolished or rebuilt
+	    or renovated or expanded.
+	    You should know that a building was expanded if the square feet has
+	    increased over time.
+
+Example queries to serve this table:
+Supposed that you wanted to query the database for all the times a building
+has changed since 1997. 
+Or you just want to check if and when Sayles HILL was last renovated
+
+BUILDINGTYPE
+------------
+This table stores the "type of a building". This table has only two fields:
+BuildingTypeID -- auto-increment field
+Type -- string representing the type of the building.
+
+Example types of buildings are:
+Academic (for non-residential buildings where classes are taught).
+Administration
+Athletic (like rec. center)
+and others.
+
+Having this table increases flexibility. So instead of always mapping all
+buildings to some pre-defined types, we could define our own types and use
+it without breaking any underlying structure or logic.
+
+BUILDINGROOM
+------------
+BuildingRoom is an empty table right now. It has 3 fields:
+BuildingID -- auto-increment field
+RoomNum -- room number of room to store
+MeterID -- the meter ID of the meter in the room
+This table is very specific in purpose. It is meant to store information
+about meters in residential (or office) buildings on campus. This happens
+only ocassionally because almost every residential building has meters in the
+basement or in some special room on campus.
+
+CALENDARTYPE
+------------
+This table has two fields:
+CalendarTypeID -- auto-increment field
+Type -- store the calendar type name
+
+Purpose:
+The purpose of the CALENDARTYPE table is to enable us identify different parts
+of the year more easily for use in and by the database.
+For example, Jan 15 2011 should be stored as some calendar type like "School
+Year."
+
+CITY
+----
+City table stores four things:
+CityID -- auto-increment
+CityName -- city name to store
+State -- state where city resides
+Country -- the country where the state is
+This information at first glance seems to be extraneous. But if prevents us
+from repeating this value when identifying address in the address table.
+So we can just link to this same tuple for all the building on campus and 
+in Northfield instead of writing this information in the database 
+everytime.
+
+DATEOBJ
+-------
+Stores four fields:
+Date -- in the MySQL date format.
+Weekday -- Enum that stores what day in the week this date falls on.
+CalendarTypeID -- what calendar type is this date in?
+FiscalYear - fiscal year of the college
+
+ENERGYDATA
+----------
+This is one of the most important tables in the database. It stores 7 fields:
+EnergyDataID -- auto-increment field
+Date -- stores the date the "energy" data was retrieved.
+Duration -- Daily? Weekly? ...
+MeterID -- What meter was used to record the data
+MeasuredValue - what's the value you just measured
+Unit - what unit is the energy data in.
+BTUConversion - BTU conversion factor for the unit the "energy" data is 
+measured in.
+Cost -- cost associated with the energy data.
+
+FUELTYPE
+--------
+This table stores three fields:
+FuelTypeID -- auto-increment field
+FuelType -- steam? gas? oil? ...
+HeatContent -- the heat content of this particular fuel type
+
+FUELTYPE_SUPPLIER
+-----------------
+This table identifies the supplier for each fuel type. It depicts the 
+many-to-many relationship between the FUEL and SUPPLIER tables.
+It has two fields:
+FuelTypeID -- FOREIGN key that links to FuelType table
+SupplierID -- FOREIGHT key that links to the supplier table
+
+HISTORY_BUILDINGTYPE
+--------------------
+This table maps a history to a particular building. A building could have
+multiple histories (that is a building could have been changed multiple times
+and so will have multiple histories).
+
+Error in Design:
+Field name should be buildingID not buildingTypeID.
+
+METERINFO
+---------
+This table stores information about a particular meter.
+It has nine fields:
+MeterID -- auto-increment field
+MeterDESC -- some succinct description of where the meter is in.
+For example, meter with meter description, GOODHUE.YEST.ELECT.CONSUMP is in 
+GOODHUE.
+MeterNUM -- should store the meter number used by the college to identify the
+meter. This field is as of the 6th of Jan 2012 not populated.
+BuildingID -- in what building is the meter in?
+MeterType -- type of meter?
+MeterManufID -- FOREIGN KEY to the manufacurers table.
+MeterModel -- stores the model number of the meter.
+FuelTypeID -- references the fueltype table to identify what fuel the current
+meter measures.
+SiemensPt -- siemens point for the current meter?
+
+SUPPLIER
+--------
+This table stores 3 fields:
+SupplierID -- auto-increment field
+SupplierName -- stores the name of the supplier
+SupplierDescr -- description of the supplier
+
+SUPPLIER_ADDRESS_EMAIL
+----------------------
+MANY TO MANY RELATIONSHIP TABLE THAT MAPS the address(es) of suppliers to 
+their emails.
+
+SUPPLIER_ADDRESS_PHONE
+----------------------
+MANY TO MANY RELATIONSHIP TABLE THAT MAPS the address(es) of suppliers to 
+their phone.
+
+TEMPERATURE
+-----------
+This table has 7 fields:
+ID -- auto-increment field
+High -- temperature high of day
+Low -- temperature low of day
+TempUnit -- unit in which temperature is stored
+HDD -- Heating Degree Day
+CDD - Cooling Degree Day
+Average -- Average temperature of the day

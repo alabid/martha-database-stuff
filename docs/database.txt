@@ -1,0 +1,33 @@
+ALL WE NEED TO KNOW ABOUT THE DATABASE AND ITS STRUCTURE
+========================================================
+Backup
+------
+We currently have two databases, "EnergyData" and "EnergyDataBackup". We try to keep both databases synchronized.
+"EnergyData" database is the main production database we use.
+On the other hand, "EnergyDataBackup" is the backup database we iterate upon during development.
+
+SQL file backup file
+--------------------
+In the "sql" folder in "martha-database-stuff" repository, there is a .sql file (most likely named "EnergyData.sql"
+that contains the DDL and DML sql of the database, "EnergyData."
+
+In the future, we might put some more ".sql" files that are sql exports of individual tables in the "EnergyData"
+database.
+
+Schema
+------
+There are 17 tables in the database:
+Address, building, BuildingHistory, BuildingType, Building_Room, CalendarType, City, DateObj, EnergyData (main table),
+FuelType, FuelType_Supplier, History_BuildingType, MeterInfo, Supplier, Supplier_Address_Email, Supplier_Address_Phone,
+Temperature.
+
+A VISUAL representation of the database produced using Microsoft Access is in the "docs" folder in the repository; this
+file is named "database schema-picture.pdf." (Note: This picture might not depict the most recent EnergyData 
+database schema because it was made even before we implemented the database using MySQL software and before we
+starting iterating over the initial design to accomodate new issues, ideas, and conveniences).
+
+
+
+
+
+

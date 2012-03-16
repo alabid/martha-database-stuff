@@ -22,7 +22,7 @@ function meterHandler($row){
 		     "MeterType" => $meterType,
 		     "MeterManufID" => addSupplier($row,true),
 		     "MeterModel" =>$row["MeterModel"],
-
+		     "SiemensPt" =>$row["SiemensPt"]
 		     );
  
   $meterID = addMeter($meterInfo);

@@ -1,0 +1,19 @@
+STEPS TO CLEAN UP ENERGY HISTORICAL DATA
+========================================
+1. Know what data we need into the database and what is right now in the 
+   database.
+
+2. Having identified the data (in spreadsheets) we need to put into the 
+   database, we make loaders (python, PHP) to load the data in the 
+   spreadsheets into the database living on 
+   https://energdata.its.carleton.edu.
+
+3. Build a matrix for the code we have.
+   Information matrix.
+
+4. User interface for data input into the database.
+
+5. User interface for data output after the database.
+
+
+Follow up to see what's up with the "auto-it" thing in Martha's office.

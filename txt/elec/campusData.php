@@ -22,7 +22,7 @@ function meterHandler($row){
 		     "MeterType" => $meterType,
 		     "MeterManufID" => addSupplier($row,true),
 		     "MeterModel" =>$row["MeterModel"],
-
+		     "SiemensPt" =>$row["SiemensPt"]
 		     );
  
   $meterID = addMeter($meterInfo);
@@ -61,7 +61,6 @@ function siemensEnergyHandler($content,$metadata){
 		  "Hour"=>0,
 		  "Minute" => 0,
 		  "Second" => 0,
-		  "Duration" =>"Daily",
 		  "MeasuredValue" => null,
 		  "BTUConversion" => null,
 		  "MeterID"=> null,

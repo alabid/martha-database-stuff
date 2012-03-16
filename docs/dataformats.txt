@@ -1,0 +1,6 @@
+Steam Plant Production
+Building Data (normalized data from original data format)
+House fields.txt, buildingfields.txt
+buildingHistory.txt, buildingdata.txt, building_buildingType.txt,
+CAMPUS_STEAM.txt, CAMPUS_ELECTRIC.txt
+ElecticityMeterReadings2011.txt
