@@ -1,0 +1,35 @@
+The AutoIt script (turbineInfo.exe) can automatically collect data, store data into excel and call a python program to compile data.
+
+--------------CONDITIONS of running this script:
+;;; When writing this script, we assumed that VestasOnline shortcut, and excel shortcut are on the desktop.
+;;; This script file, the python code and Hourly Wind Turbine Data.xlsx are in "My Documents".
+;;; We also assumed that there are no files named current.txt, Hourly Wind Turbine Data.txt in "My Documents".
+;;; If there are, please delete them before running this script.
+;;; The excel version is 2007 Windows version.
+
+-------------------WHAT TO DO IF THE SCRIPT STOPS RUNNING, but probably can finish:
+;;; Can either treat this situation as failure and follow the steps for failure,
+;;; or help the script to continue
+
+-------------------How to help the script to continue if it stops:
+;;; If it cannot dial up to the server, dial up manually.
+;;; If it cannot save the excel file, save it manually. Choose yes when saving. Save data as txt.
+;;; If it cannot close the excel file, (after saving), close it manually. Choose no when closing.
+;;; If it stops after copy the data from VestasOnline software (does not open excel), click on command line window to make it active
+;;; Other situations: Try to make the relevant windows active (software windows, command line window, and excel)
+;;; If fail, please follow the steps for failure.
+
+-------------------WHAT TO DO IF THE SCRIPT FAILS TO FINISH:
+;;; 1. stop executing this script
+;;; 2. delete current.txt, Hourly Wind Turbine Data.txt in "My Documents"
+;;; 3. Rerun this script
+
+--------------------Other notes
+; Can stop the script manually when it is neither collecting nor compiling data
+
+; Only run the script when it is 6 am or 8 pm. Change @HOUR= (a number here without the parenthesis) if you want to run the script at different time.
+Can add OR @HOUR = (put a number here without the parenthesis) before Then, if you want to run the script at additional time.
+
+
+--------------------
+For information about the python script used for automated data collection, please look at removeDuplicatesDoc.txt.

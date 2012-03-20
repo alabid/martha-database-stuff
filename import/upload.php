@@ -1,10 +1,14 @@
 <?php
+
+include_once("campusData.php");
+include_once("senddata.php");
+
 if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') {   
     $poidsMax = ini_get('post_max_size');
     $oElement->addError("fileoverload", "Your file exceeds maximum allowed size $poidsMax.");
 } 
 $filename = $HTTP_POST_FILES['uploadedfile']['name'];
-$filename = str_replace("#", "No.", $filenamee);
+$filename = str_replace("#", "No.", $filename);
 $filename = str_replace("$", "Dollar", $filename);
 $filename = str_replace("%", "Percent", $filename);
 $filename = str_replace("^", "", $filename);
@@ -20,7 +24,7 @@ foreach ($_FILES as $file) {
     if (!in_array(end(explode(".", strtolower($file['name']))), $allowedExtensions)) {
       die($file['name'].' is an invalid file type!<br/>'.
 	  '<a href="javascript:history.go(-1);">'.
-	  '&lt;&lt Go Back</a>');
+	  '&lt;&lt Sorry, Go Back</a>');
     }
   }
 } 
@@ -41,7 +45,31 @@ if($uploadedfile != none){ //AS LONG AS A FILE WAS SELECTED...
       $theDiv = $theFileSize / 1000;
       $theFileSize = round($theDiv, 1)." KB"; //round($WhatToRound, $DecimalPlaces)
     }
-    
+    $connection = mysql_connect("localhost","root","");
+   if (!$connection)
+     {
+       die("Database connection failed:". mysql_error());
+     }
+
+   $db_select = mysql_select_db("EnergyData",$connection);
+   if (!$db_select)
+     {
+    die("Database select failed:".mysql_error());
+     }
+
+    $f = fopen($path,"r") or die("Can't open file");
+    $data =fread($f, filesize($path));
+    //echo $data;
+    $content = explode("\n",$data);
+    if (sizeof($content) == 1){
+      $content = explode("\r",$data);
+    }
+    var_dump($content);
+    //$functionName($content);
+    fclose($f);
+
+
+
     echo <<<UPLS
       <table cellpadding="5" width="300">
       <tr>
@@ -61,20 +89,13 @@ if($uploadedfile != none){ //AS LONG AS A FILE WAS SELECTED...
       </tr>
       </table>
       
-      UPLS;
+UPLS;
     
   } else {
-    
-    //PRINT AN ERROR IF THE FILE COULD NOT BE COPIED
-    echo <<<UPLF
-      <table cellpadding="5" width="80%">
-      <tr>
-      <td align="Center" colspan="2"><font color=\"#C80000\"><b>File could not be uploaded</b></font></td>
-      </tr>
-      
-      </table>
+   
 
-      UPLF;
   }
 }  
+
+
 ?>
