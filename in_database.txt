@@ -1,0 +1,9 @@
+IN THE DATABASE
+===============
+1. All the information about the buildings, their names, and the 
+   resources/fuels they measure. Both information come from
+   "Building Data" folder in Energy Data folder.
+
+NOT YET IN THE DATABASE
+=======================
+1. 

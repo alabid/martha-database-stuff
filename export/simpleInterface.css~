@@ -1,0 +1,35 @@
+#columns{margin:20px;color:blue;font-size:12px;}
+#constraints{margin:20px;font-size:12px;}
+.options{width:500px;font-size:15px;margin-left:20px;padding-left:20px;}
+.conditions{font-size:17px;margin-bottom:5px;}
+#wrapper {
+  margin-left: auto;
+  margin-right: auto;
+  width: 960px;
+  padding: 10px;
+}
+
+#wrapper:first-child h1 {
+  font-size: 2.5em;
+  color: #aa00ff;
+  padding-bottom: 10px;
+}
+
+#wrapper:first-child span {
+ font-size: 1.3em;
+}
+
+#wrapper #instructions-examples{
+ padding-top: 10px;
+ padding-bottom: 3px;
+}
+
+#wrapper #instructions-examples #examples {
+  padding-right: 10px;
+  padding-left: 10px;
+}
+
+#wrapper #instructions-examples #examples a {	
+  padding-right: 10px;
+  padding-left: 10px;
+}

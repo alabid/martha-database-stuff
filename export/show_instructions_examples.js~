@@ -1,0 +1,11 @@
+(function($){
+     // on click on instructions tab
+     $("ul li.instr a").click(function() {
+
+     });
+     // on click on results
+     $("ul li.result a").click(function() {
+
+     });
+ }
+)(jQuery);
