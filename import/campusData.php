@@ -76,6 +76,11 @@ function campusSteamHandler($content){
   Generic energy handler.
   It is based on the Siemens data format.
 */
+
+function errorMessage($errorType){
+   echo "<script>alert('".$errorType.". Please check again.');window.href.location='index.php?option=format';</script>";
+}
+
 function siemensEnergyHandler($content,$metadata){
     $data = array("Year"=>null,
 		  "Month"=>null,
@@ -121,7 +126,7 @@ function siemensEnergyHandler($content,$metadata){
     if (strstr($line,"Point") && strstr($line, $metadata["MeterIdentifier"])){
       $meter["SiemensPt"] =  str_replace(":","",$field[0]);
       $meter["MeterDescr"] = $field[1];
-      $meter["BuildingName"] = $field[2];
+      $meter["BuildingName"] = $field[2] ? $field[2]: errorMessage("Unknown building");
       
       $id = meterHandler($meter);
       echo "return meter id {$id}!<br/>";
@@ -161,8 +166,10 @@ function siemensEnergyHandler($content,$metadata){
 	      }
 	      addEnergy($data);
 	      //var_dump($data);
-	      echo "<br/>";
+	      echo "successfully update the database!";
 	    }
+	  }else{
+	    errorMessage("Unknown meter");
 	  }
 	}
       }
@@ -265,7 +272,7 @@ function hourlyWindTurbine($content){
     $data["Minute"] = $time[1];
     $data["MeasuredValue"] = $field[1];
     $data["BTUConversion"] = ((double)$field[1])*((double)$metadata["Conversion"]);
-    var_dump($data);
+    //var_dump($data);
     addEnergy($data);
   }
 }

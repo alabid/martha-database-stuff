@@ -18,7 +18,7 @@ $filename = str_replace("?", "", $filename);
 $uploaddir = "uploads/";
 $path = $uploaddir.$filename; 
 
-$allowedExtensions = array("txt","csv","xml","doc","xls");
+$allowedExtensions = array("txt","csv");
 foreach ($_FILES as $file) {
   if ($file['tmp_name'] > '') {
     if (!in_array(end(explode(".", strtolower($file['name']))), $allowedExtensions)) {
@@ -28,7 +28,9 @@ foreach ($_FILES as $file) {
     }
   }
 } 
-if($uploadedfile != none){ //AS LONG AS A FILE WAS SELECTED...
+
+
+if($filename != null){ //AS LONG AS A FILE WAS SELECTED...
   
   if(copy($HTTP_POST_FILES['uploadedfile']['tmp_name'], $path)){ //IF IT HAS BEEN COPIED...
     
@@ -56,6 +58,19 @@ if($uploadedfile != none){ //AS LONG AS A FILE WAS SELECTED...
      {
     die("Database select failed:".mysql_error());
      }
+   
+   $executionFunctions=array("wind1" => "hourlyWindTurbine",
+		    "campusElec"=>"electricHandler",
+		    "elecDemand"=>"kwDemand",
+		    "weeklyElecConsump" =>"kwWeekly",
+		    "campusWater" => "campusWaterHandler",
+		    "campusSteam" => "campusSteamHandler");
+   $checkfunctions=array("wind1" => "checkHourlyWindTurbine",
+		    "campusElec"=>"checkElectricHandler",
+		    "elecDemand"=>"checkkwDemand",
+		    "weeklyElecConsump" =>"checkkwWeekly",
+		    "campusWater" => "checkCampusWaterHandler",
+		    "campusSteam" => "checkCampusSteamHandler");
 
     $f = fopen($path,"r") or die("Can't open file");
     $data =fread($f, filesize($path));
@@ -64,8 +79,14 @@ if($uploadedfile != none){ //AS LONG AS A FILE WAS SELECTED...
     if (sizeof($content) == 1){
       $content = explode("\r",$data);
     }
-    var_dump($content);
-    //$functionName($content);
+    //var_dump($content);
+    //echo $executionFunctions[$_GET["type"]];
+    //$checkFunctions[$_GET["type"]]($content);
+    if ($_GET["type"]=="log"){
+      $executionFunctions["log"]($content, $_GET["year"]);
+    }else{
+      $executionFunctions[$_GET["type"]]($content);
+    }
     fclose($f);
 
 
@@ -93,8 +114,13 @@ UPLS;
     
   } else {
    
-
+    echo "Error";
   }
+}
+  else{
+    echo "<script>alert('Please select a file!');window.location.href='index.php?option=upload';</script>";
+
+  
 }  
 
 

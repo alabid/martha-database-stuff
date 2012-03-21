@@ -1,4 +1,8 @@
-<h2>Instructions</h2>
-To use this system, you need to select the file format first. 
-Please choose the correct one.
+If this is your first time to use this system, please view tutorials and download data format first. Then makre sure you convert your files into the corresponding formats before uploading.
+You are supposed to use exactly the same formats as provided.
+Each file should be named properly according to the following criteria:
+1. Don't include any white space.
+2. Include the energy type.
+3. Only .txt and .csv accepted.
+After you check the above, you can start uploading.
 Failure to do so will cause a severe error in your database.
