@@ -223,7 +223,7 @@ function put_in_db($contents, $year) {
 				  $btus[$types[$i]],
 				  $units[$types[$i]],
 				  "Xcel",
-				  "Facilities Building/Steam Plant");
+				  "Facilities Building/ Steam Plant");
   }
   
   print_all_r($result);

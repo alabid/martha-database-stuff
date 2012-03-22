@@ -38,7 +38,6 @@ $fhandle = null;
 if (is_dir($dir)) {
   if ($dh = opendir($dir)) {
     while (($file = readdir($dh)) !== false) {
-      echo $file . "<br/>";
       if (strcmp(filetype($file), "dir") != 0 
 	  && strcmp($file, "putInDB.php")
 	  && after2000($file)) {
@@ -104,8 +103,8 @@ function print_all_r($result) {
 }
 
 /*
-  The function that does most if not all of the work->
-  readAndPutInArray($contents)
+The function that does most if not all of the work->
+readAndPutInArray($contents)
  */
 function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $supplierName, $buildingName) {
   $header = "";
