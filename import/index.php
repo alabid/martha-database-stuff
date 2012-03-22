@@ -24,7 +24,7 @@ energyName["campusWater"] = "(Siemens System) Campus Water Consumption";
 energyName["campusSteam"] = "(Siemens System) Campus Steam Consumption";
 energyName["campusElec"] = "(Siemens System) Campus Electric Consumption";
 energyName["bill"] = "Bills";
-
+$(".collapse").collapse();
 	$(function() {
 		$( "#accordion" ).accordion();
 	});
@@ -63,8 +63,10 @@ energyName["bill"] = "Bills";
      "<input id='formbutton' class='formbutton' type='submit' value='Upload File' />"+
      "<input type='submit' value='Restart' onclick='reload()'/>" +
      "</form>";
-
+     if (choices.value=="log"){
+       changeYear(choices.value);
      }
+  }
      function check(){
           if (!document.getElementById("toCheck").checked){
            alert("Must check first");
@@ -87,8 +89,8 @@ energyName["bill"] = "Bills";
 	     }
 	     </script>
 <h1 xmlns="http://www.w3.org/1999/xhtml">Carleton College Energy Data</h1>
-<marquee xmlns="http://www.w3.org/1999/xhtml" class="lead" behavior=alternate>A user interface
-for data management. </marquee>
+<div width=10px;><marquee xmlns="http://www.w3.org/1999/xhtml" class="lead" behavior="alternate">A user interface
+for data management. </marquee></div>
 <br>
 <div class="container-fluid">
 <div class="row-fluid">
@@ -173,14 +175,14 @@ for data management. </marquee>
    }else if ($_GET["option"] && $_GET["option"]=="contact"){
    echo <<<UPLS
    <div id="accordion">
-	<h3><a href="#">Energy Data Management Project</a></h3>
-	<div>
+	<h3><a href="#" data-toggle="collapse" data-target="#project">Energy Data Management Project</a></h3>
+	<div id="project" class="collapse in">
 		<p>
 		Some stuff here, probably an overview
 		</p>
 	</div>
-	<h3><a href="#">Collaborators</a></h3>
-	<div>
+	<h3><a href="#" data-toggle="collapse" data-target="#collaborator">Collaborators</a></h3>
+	<div id="collaborator" class="collapse in">
 		<p> (Alphabetical order by last name)
 	  <li>Daniel Alabi</li>
 	  <li>Paula Lackie</li>
@@ -189,8 +191,8 @@ for data management. </marquee>
 	  <li>More</li>
 		</p>
 	</div>
-	<h3><a href="#">More information</a></h3>
-	<div>
+	<h3><a href="#" data-toggle="collapse" data-target="#info">More information</a></h3>
+	<div id="info" class="collapse in">
 		<p>
 	Contact <strong>Martha Larson</strong> for more information and arrangment for tours.
 	  

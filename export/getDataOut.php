@@ -234,9 +234,12 @@ function getConstraints(){
   if ($_GET["fiscalYear"]){
     $field["FiscalYear="] = $_GET["fiscalYear"];
   }
-   if ($_GET["weekday"]){
+  if ($_GET["weekday"]){
     $field["Weekday="] = $_GET["weekday"];
-   }
+  }
+  if ($_GET["duration"]){
+    $field["Duration="] = $_GET["duration"];
+  }
   //var_dump($field);
   return $field;
 }

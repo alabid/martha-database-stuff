@@ -38,7 +38,7 @@ function dataHandler(){
     
     if (cons!=false || parseInt(document.getElementById("constraints").value)==0){
 	url +="&"+cons;
-	
+	alert("getDataOut.php?"+url);
 	//alert(url);
 	window.location.href="getDataOut.php?"+url;
 	// Equivalence: "Enter" the URL to the address field of the brower.
@@ -60,7 +60,7 @@ function selectConstraints(){
     var startDay = false;
     var endDay = false;
     var constraints = parseInt(document.getElementById("constraints").value);
-    
+    alert(constraints);
     for (var i=0;i<constraints;i++){
 	var temp =  document.getElementById('consSel'+i).value;
 
@@ -140,6 +140,27 @@ function selectConstraints(){
   Dynamically generate drop-down menu according to the number of constraints selected.
 
 */
+
+
+function addConstraint(){
+    var selection = document.getElementById("constraints");
+    //alert(selection);
+  
+    var constraintsDiv = document.getElementById("forConstraints");
+    constraintsDiv.innerHTML+="<div class='conditions' id='consDiv"+selection.value+
+	"'>"+"Constraint "+(parseInt(selection.value)+1)+" :<select id='consSel"+selection.value+
+	    "' onchange='optionHandler(this,"+selection.value+")'><option VALUE='null'> --- </option></select></div>";
+    selection.value=parseInt(selection.value)+1;
+    if (selection.value-1==0){
+	
+    }
+    //addOneConstraint(pasetInt(selection.value)); 
+  
+    //$("$columns").val(selection.value);
+
+    
+}
+
 function addConstraints(selection){
     curCons = new Array();
     var constraintsDiv = document.getElementById("forConstraints");
@@ -410,7 +431,7 @@ function optionHandler(selection,id){
 	
 	option+="<OPTION value='Daily'>Daily</OPTION>";
 	option+="<OPTION value='Monthly'>Monthly</OPTION>";
-	option+="<OPTION value='Annual'>Annual</OPTION>";
+	//option+="<OPTION value='Annual'>Annual</OPTION>";
 	option+="</select>";
     }
     else if (selection.value.toString() == "building"){
