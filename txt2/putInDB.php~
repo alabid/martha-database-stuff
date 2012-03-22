@@ -38,7 +38,6 @@ $fhandle = null;
 if (is_dir($dir)) {
   if ($dh = opendir($dir)) {
     while (($file = readdir($dh)) !== false) {
-      echo $file . "<br/>";
       if (strcmp(filetype($file), "dir") != 0 
 	  && strcmp($file, "putInDB.php")
 	  && after2000($file)) {
@@ -46,27 +45,17 @@ if (is_dir($dir)) {
 	$contents = preg_split("/\r/", strtolower(fread($fhandle, 
 							filesize($file))));
 	// we use mac carriage returns here (\r)
-	$result[] = readAndPutInArray($contents, // $contents -- split lines from opened file
-				      3,  // $valueIndex -- the column number of the column that we want to get data from
-				      // this should correspond to the column occupied by the $resource (see below).
-				      "oil", // $resource -- the name of the resource of energy type that we're interested in (e.g. gas or oil)
-				      0.142e6, // $btuconv -- one unit of $resource == amount in $btuconv (in BTU's)
-				      "gal",  // $unit -- unit of $resource
-				      "Xcel", // $supplierName -- supplierName of resource
-				      "Facilities Building/Steam Plant"); // $buildingName -- building Name where $resource is produced
-	                                                                  // e.g. facilities buidling/steam plant for production of steam
+	$result[] = readAndPutInArray($contents);
       }
     }
   closedir($dh);
   }   
 }
 
-print_all_r($result);exit();
 
 for ($i = 0; $i < count($result); $i++) {
   for ($j = 0; $j < count($result[$i]); $j++) {
-    print_r($result[$i][$j]);
-    // addEnergy($result[$i][$j]);
+    addEnergy($result[$i][$j]);
   }
 }
 
@@ -96,24 +85,33 @@ function after2000($file) {
  */
 function print_all_r($result) {
   foreach($result as $array) {
-    foreach ($array as $obj) {
-      print_r($obj);
-      echo "<br/>";
-    }
+    print_r($array);
   }
 }
 
 /*
-  The function that does most if not all of the work->
-  readAndPutInArray($contents)
+The function that does most if not all of the work->
+readAndPutInArray($contents)
  */
-function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $supplierName, $buildingName) {
+function readAndPutInArray($contents) {
   $header = "";
   $headers = array();
   $start = false;
   $formerline = "";
   $month = "";
+  $valueIndex = 5; // for oil
   
+  $BTUConv = array(
+		 "steam" => 1000, /* 1 MB/HR => 1.000MBTU/Unit */
+		 "oil" => 0.142e6  // in MMBTU's
+		 );
+
+  $units = array(
+	       "steam" => "K LB/HR" ,
+	       "oil" => "gal"
+		 );
+
+  $req_headers = array("oil");
 
   $entry = array("Day" => null,
 		 "Month" => null,
@@ -122,10 +120,10 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
 		 "Minute" => 0,
 		 "Second" => 0,
 		 "MeasuredValue" => null,
-		 "BTUConversion" => $btuconv,
-		 "SupplierName" => $supplierName,
-		 "BuildingName" => $buildingName,
-		 "Unit" => $unit,
+		 "BTUConversion" => null,
+		 "SupplierName" => "Xcel",
+		 "BuildingName" => "Facilities Building/ Steam Plant",
+		 "Unit" => $units["oil"],
 		 "Type" => null
 		 );
 
@@ -136,7 +134,8 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
   $entries = array(); // will store an array of entries
   $num = 0;
   $year = 0;
- 
+  // global $months; // no global anymore. global messes things up!
+
 
   foreach($contents as $line) {
     if (preg_match("/^(\r?\n?)+$/", $line) ||
@@ -153,14 +152,14 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
     if (lineInArray($months, $line) === false){
       if (strlen($line) < 30) continue;
       else {
-	resetEntry($entry, $supplierName, $buildingName); 
+	resetEntry($entry); // reset an $entry into its initial state
 	// so that you can fill it again with new values this time
 	if ($months == null) continue;
 	$entry["Month"] = array_search($month, $months) + 1;
 	$linevals = explode("\t", $line); // fill this as soon as possible
 	$entry["Day"] = $linevals[0];
 	$entry["Year"] = $year;
-	$entry["Type"] = $resource;
+	$entry["Type"] = $req_headers[0]; // since there is only one thing there for now
 
 
 	if (preg_match("/^(\"|\')\d+.*\d+(\"|\')$/", $linevals[$valueIndex])) {
@@ -172,11 +171,12 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
 	} else {
 	  $entry["MeasuredValue"] = $linevals[$valueIndex];
 	}
-	var_dump($entry["MeasuredValue"]);
-	$entry["BTUConversion"] = (double)$btuconv *  (double) $entry["MeasuredValue"];
+
+	$entry["BTUConversion"] = (double)$BTUConv[$req_headers[0]] *
+	  (double) $entry["MeasuredValue"];
 
 	$entries[] = $entry;
-	
+	var_dump($entry["MeasuredValue"]);
       }
     } else {
       $month = lineInArray($months, $line);
@@ -188,7 +188,7 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
   return $entries;
 }
 
-function resetEntry($entry, $supplierName, $buildingName) {
+function resetEntry($entry) {
   $entry = array("Day" => null,
 		 "Month" => null,
 		 "Year" => null,
