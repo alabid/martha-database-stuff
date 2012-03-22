@@ -10,76 +10,17 @@
   is then called which inserts the tuples of data into the
   database for future use.
  */
-
-$dir = "./"; // current directory
-
-// include the crucial "senddata.php" file
 include_once("senddata.php");
 
-// make a connection here
-$connection = mysql_connect("localhost","root","");
-if (!$connection) {
-  die("Database connection failed:". mysql_error());
-}
- 
-$db_select = mysql_select_db("EnergyData",$connection);
-if (!$db_select) {
-   die("Database select failed:".mysql_error());
-}
-  
-// the years that files you are allowed to traverse in
-// the dictionary correspond to.
+
 $allowed = array("2009", "2010", "2011");
-
-// $result stores the result of collating the data
-// from each file
-$result;
-$fhandle = null;
-if (is_dir($dir)) {
-  if ($dh = opendir($dir)) {
-    while (($file = readdir($dh)) !== false) {
-      echo $file . "<br/>";
-      if (strcmp(filetype($file), "dir") != 0 
-	  && strcmp($file, "putInDB.php")
-	  && after2000($file)) {
-	$fhandle = fopen($file, "rb"); 
-	$contents = preg_split("/\r/", strtolower(fread($fhandle, 
-							filesize($file))));
-	// we use mac carriage returns here (\r)
-	$result[] = readAndPutInArray($contents, // $contents -- split lines from opened file
-				      3,  // $valueIndex -- the column number of the column that we want to get data from
-				      // this should correspond to the column occupied by the $resource (see below).
-				      "oil", // $resource -- the name of the resource of energy type that we're interested in (e.g. gas or oil)
-				      0.142e6, // $btuconv -- one unit of $resource == amount in $btuconv (in BTU's)
-				      "gal",  // $unit -- unit of $resource
-				      "Xcel", // $supplierName -- supplierName of resource
-				      "Facilities Building/Steam Plant"); // $buildingName -- building Name where $resource is produced
-	                                                                  // e.g. facilities buidling/steam plant for production of steam
-      }
-    }
-  closedir($dh);
-  }   
-}
-
-print_all_r($result);exit();
-
-for ($i = 0; $i < count($result); $i++) {
-  for ($j = 0; $j < count($result[$i]); $j++) {
-    print_r($result[$i][$j]);
-    // addEnergy($result[$i][$j]);
-  }
-}
-
-// close the connection. Save handles. Save resources. Save the world.
-mysql_close($connection);
-
 /*
   checks if the $file corresponds to a year after
   year 2000.
  */
 function after2000($file) {
   global $allowed;
-
+  
   foreach($allowed as $each_allowed) {
     if (strstr($file, $each_allowed)) {
       return true;
@@ -88,12 +29,13 @@ function after2000($file) {
   return false;
 }
 
-/*
-  print_all_r --
-  $result is an array of array
-  prints recursively (using the built-in print_r)
-  everything in $result
- */
+function add_all_r($result) {
+  foreach($result as $array) {
+    foreach($array as $obj) {
+      addEnergy($obj);
+    }
+  }
+}
 function print_all_r($result) {
   foreach($result as $array) {
     foreach ($array as $obj) {
@@ -104,8 +46,8 @@ function print_all_r($result) {
 }
 
 /*
-  The function that does most if not all of the work->
-  readAndPutInArray($contents)
+The function that does most if not all of the work->
+readAndPutInArray($contents)
  */
 function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $supplierName, $buildingName) {
   $header = "";
@@ -153,7 +95,7 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
     if (lineInArray($months, $line) === false){
       if (strlen($line) < 30) continue;
       else {
-	resetEntry($entry, $supplierName, $buildingName); 
+	resetEntry($entry, $btuconv, $supplierName, $buildingName, $unit);
 	// so that you can fill it again with new values this time
 	if ($months == null) continue;
 	$entry["Month"] = array_search($month, $months) + 1;
@@ -188,7 +130,7 @@ function readAndPutInArray($contents, $valueIndex, $resource, $btuconv, $unit, $
   return $entries;
 }
 
-function resetEntry($entry, $supplierName, $buildingName) {
+function resetEntry($entry, $btuconv, $supplierName, $buildingName, $unit) {
   $entry = array("Day" => null,
 		 "Month" => null,
 		 "Year" => null,
@@ -196,11 +138,11 @@ function resetEntry($entry, $supplierName, $buildingName) {
 		 "Minute" => 0,
 		 "Second" => 0,
 		 "MeasuredValue" => null,
-		 "BTUConversion" => null,
-		 "SupplierName" => "Xcel",
-		 "BuildingName" => "Facilities Building/ Steam Plant",
-		 "Type" => null,
-		 "Unit" => $units["oil"]
+		 "BTUConversion" => $btuconv,
+		 "SupplierName" => $supplierName,
+		 "BuildingName" => $buildingName,
+		 "Unit" => $unit,
+		 "Type" => null
 		 );
 }
 
@@ -228,4 +170,77 @@ function lineInArray($array, $line) {
   return false;
 }
 
+function put_in_db($contents, $year) {
+  /**
+     $type could be oil, gas, or steam
+   **/
+  if (intval($year) < 2009) {
+    echo "Only years after 2009 are allowed!<br/>";
+    return;
+  }
+  
+  // make a connection here
+  $connection = mysql_connect("localhost","root","");
+  if (!$connection) {
+    die("Database connection failed:". mysql_error());
+  }
+  
+  $db_select = mysql_select_db("EnergyData",$connection);
+  if (!$db_select) {
+    die("Database select failed:".mysql_error());
+  }
+  
+  // the years that files you are allowed to traverse in
+  // the dictionary correspond to.
+  
+  // $result stores the result of collating the data
+  // from each file
+
+  $columns = array(
+		   "oil" => 5,
+		   "gas" => 4,
+		   "steam" => 1
+		   );
+
+  $units = array(
+		 "oil" => "gal",
+		 "gas" => "mcf",
+		 "steam" => "klb."
+		 );
+
+  $btus = array(
+		"oil" => 0.142e6,
+		"gas" => 1.010e6,
+		"steam" => 1.0e3
+		);
+  $types = array("oil", "gas", "steam");
+
+  $result = array();		 
+  for ($i = 0; $i < sizeof($types); $i++) {
+    $result[] = readAndPutInArray($contents,
+				  $columns[$types[$i]],
+				  $types[$i],
+				  $btus[$types[$i]],
+				  $units[$types[$i]],
+				  "Xcel",
+				  "Facilities Building/Steam Plant");
+  }
+  
+  print_all_r($result);
+  add_all_r($result);
+  // close the connection. Save handles. Save resources. Save the world.
+  mysql_close($connection);
+}
+
+function test_put_in_db() {
+  $file = "SteamPlantProductionLog2010.txt";
+  $fhandle = fopen($file, "rb");
+  $contents = preg_split("/\r/",
+			 strtolower(fread($fhandle,
+					  filesize($file))));
+  $year = "2010";
+  put_in_db($contents, $year);
+}
+
+test_put_in_db();
 ?>

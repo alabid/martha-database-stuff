@@ -38,7 +38,6 @@ $fhandle = null;
 if (is_dir($dir)) {
   if ($dh = opendir($dir)) {
     while (($file = readdir($dh)) !== false) {
-      echo $file . "<br/>";
       if (strcmp(filetype($file), "dir") != 0 
 	  && strcmp($file, "putInDB.php")
 	  && after2000($file)) {
