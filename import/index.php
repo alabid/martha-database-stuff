@@ -9,7 +9,20 @@
 <script src="jquery-ui-1.8.18/ui/jquery.ui.datepicker.js"></script>
 <script type="text/javascript" src="bootstrap/js/bootstrap.min.js"></script>
 <link rel="stylesheet" href="bootstrap/css/bootstrap.min.css">
-
+<script type="text/javascript">
+   $(document).ready(function(){
+       $(".collapse-in").css("display", "none");
+       $(".click-collapse-in").click(function() {
+	   var col = $(this).parent().next();
+           if (col.css("display") === "none") {
+	     col.slideDown();
+	   } else {
+	     col.slideUp();
+	   }
+	   return false;
+	 });
+    });
+</script>
 <body>
 
 <script language="javascript">
@@ -25,10 +38,10 @@ energyName["campusSteam"] = "(Siemens System) Campus Steam Consumption";
 energyName["campusElec"] = "(Siemens System) Campus Electric Consumption";
 energyName["bill"] = "Bills";
 $(".collapse").collapse();
-	$(function() {
+/*$(function() {
 		$( "#accordion" ).accordion();
 	});
-/*$(function() {
+$(function() {
 		$( "#datepicker" ).datepicker();
 	});*/
 
@@ -175,14 +188,14 @@ for data management. </marquee></div>
    }else if ($_GET["option"] && $_GET["option"]=="contact"){
    echo <<<UPLS
    <div id="accordion">
-	<h3><a href="#" data-toggle="collapse" data-target="#project">Energy Data Management Project</a></h3>
-	<div id="project" class="collapse in">  
+	<h3><a href="#" class="click-collapse-in">Energy Data Management Project</a></h3>
+	<div id="project" class="collapse-in">  
                <br/>
 	       <strong>This user interface is for the Carleton Energy Sustainability Project.</strong>
                <br/><br/>
 	</div>
-	<h3><a href="#" data-toggle="collapse" data-target="#collaborator">Collaborators</a></h3>
-	<div id="collaborator" class="collapse in">
+	<h3><a href="#" class="click-collapse-in">Collaborators</a></h3>
+	<div id="collaborator" class="collapse-in">
 		<p> (Alphabetical order by last name)
           <li><a href="mailto:alabid@carleton.edu">Daniel Alabi   (alabid@carleton.edu)</a></li>
           <li><a href="mailto:plackie@carleton.edu">Paula Lackie   (plackie@carleton.edu)</a></li>
@@ -190,8 +203,8 @@ for data management. </marquee></div>
           <li><a href="mailto:linji@carleton.edu">Jie Lin  (linji@carleton.edu)</a></li>
 		</p>
 	</div>
-	<h3><a href="#" data-toggle="collapse" data-target="#info">More information</a></h3>
-	<div id="info" class="collapse in">
+	<h3><a href="#" class="click-collapse-in">More information</a></h3>
+	<div id="info" class="collapse-in">
 		<p>
 	Contact <strong>Martha Larson</strong> for more information and arrangment for tours.
 	  
