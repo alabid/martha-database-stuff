@@ -38,18 +38,14 @@ energyName["campusSteam"] = "(Siemens System) Campus Steam Consumption";
 energyName["campusElec"] = "(Siemens System) Campus Electric Consumption";
 energyName["bill"] = "Bills";
 $(".collapse").collapse();
-/*$(function() {
-		$( "#accordion" ).accordion();
-	});
-$(function() {
-		$( "#datepicker" ).datepicker();
-	});*/
 
-  function changeYear(choices){
+
+  function changeYear(choice){
     var div = document.getElementById("checkDiv");
     div.innerHTML = "<input id='toCheck' type='checkbox' value='Yes' /> I understand all the procedures and "+
-     "I'm sure "+'"'+energyName[choices]+"-"+document.getElementById("year").value+
+     "I'm sure "+'"'+energyName[choice]+"-"+document.getElementById("year").value+
       '"'+" is the one I am uploading.";
+   document.getElementById("browse").action = "upload.php?type="+choice+"&year="+document.getElementById("year").value;
  }
   function uploadHandler(){
      var choices = document.getElementById("choices");
@@ -65,7 +61,7 @@ $(function() {
 	       
 
      }
-     div.innerHTML += "<form class='classic1' enctype='multipart/form-data' " +
+     div.innerHTML += "<form id='browse' class='classic1' enctype='multipart/form-data' " +
      "action='upload.php?type="+choices.value+"'"+
      " method='POST' onsubmit='return check()'>" +
      "<input type='hidden' name='MAX_FILE_SIZE' value='900000000' />"+

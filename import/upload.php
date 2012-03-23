@@ -104,10 +104,6 @@ if($filename != null){ //AS LONG AS A FILE WAS SELECTED...
       <td align="right"><b>File Size: </b></td>
       <td align="left">$theFileSize</td>
       </tr>
-      <tr>
-      <td align="right"><b>Directory: </b></td>
-      <td align="left">$uploaddir</td>
-      </tr>
       </table>
       
 UPLS;

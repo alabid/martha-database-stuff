@@ -224,7 +224,7 @@ function dumpDataToDB($filename,$functionName,$separator="\r"){
   fclose($f);
   $header = explode("\t",$row[0]);
   echo sizeof($header);
-  var_dump($header);
+  //var_dump($header);
   for ($i=1;$i< sizeof($row);$i++){
     $temp = explode("\t",$row[$i]);
     //var_dump( $temp);
@@ -235,8 +235,8 @@ function dumpDataToDB($filename,$functionName,$separator="\r"){
     for ($j = 0; $j < sizeof($header);$j++){
       $newArray[$header[$j]] = $temp[$j];
     }
-    var_dump($newArray);
-    echo "<br/>".$functionName."<br/>";
+    //var_dump($newArray);
+    //echo "<br/>".$functionName."<br/>";
     $functionName($newArray);
   }
 }
@@ -296,7 +296,7 @@ function createDate($data){
   $date = date('Y-m-d H:i:s',mktime($hour,$minute,$second,$month,$day,$year));
 
   $dateStr = getDataFromDB("DateObj","Date",$date,"Date");
-    echo "<br/>This is the date string: ".$dateStr."!<br/>";
+  // echo "<br/>This is the date string: ".$dateStr."!<br/>";
   if ($dateStr!=""){
     return $dateStr;
   }else{
@@ -306,8 +306,8 @@ function createDate($data){
       $fiscalYear = $year;
     }
     $weekDay = date("D",mktime($hour,$minute,$second,$month,$day,$year));
-    echo "<br/>This is the date: ".$date."!<br/>";
-    echo "<br/>This is the weekday: ".$weekDay."!<br/>";
+    // echo "<br/>This is the date: ".$date."!<br/>";
+    //echo "<br/>This is the weekday: ".$weekDay."!<br/>";
    
     $query = "INSERT INTO DateObj (Date, Weekday, CalendarTypeID, FiscalYear) VALUES ('{$date}','{$weekDay}',{$calendarTypeID},{$fiscalYear})";
     mysql_query($query);
@@ -350,9 +350,9 @@ function addEnergy($data){
     $data should at least contain Year, Month, Day, Hour, Minute, Second, MeasuredValue, Unit, BTUConversion, Type, BuildingName, SupplierName
    */
   // add into EnergyData table.
-  var_dump($data);
+  //var_dump($data);
   $date = createDate($data); // get the date.
-  echo "The date is ".$date."!<br/>";
+  //echo "The date is ".$date."!<br/>";
   if ($date ==="" || $date===null){
     echo "Error in date.<br/>";
     return;
@@ -406,7 +406,7 @@ function addEnergy($data){
     $query = "INSERT INTO EnergyData (Date, Duration, MeterID, MeasuredValue, Unit) VALUES ('{$date}','{$duration}', '{$meterID}', '{$measuredValue}', '{$unit}')";
   }
   mysql_query($query);
-  echo "Query is".$query."<br/>";
+  //echo "Query is".$query."<br/>";
 }
 
 /*
@@ -444,7 +444,7 @@ function addMeter($data){
     }
   }
 
-  echo "in addMeter, building ID :".$buildingID."<br/>";
+  //echo "in addMeter, building ID :".$buildingID."<br/>";
   $fuelTypeID = addFuelType($data);
   if ($fuelTypeID ==="" || $fuelTypeID ===null){
     return "";
@@ -458,14 +458,14 @@ function addMeter($data){
 		 $data["MeterManufName"]: (($data["Supplier"]!=="" && $data["Supplier"]!==null) ? 
 					   $data["Supplier"] : (($data["SupplierName"]!=="" && $data["SupplierName"]!==null) ? 
 								$data["SupplierName"] : "")));
-    echo "Supplier name is ".$supplier."<br/>";
+    //echo "Supplier name is ".$supplier."<br/>";
     $data["MeterManufName"]=$supplier;
     $meterManufID = addSupplier($data,true);
     if ($meterManufID ==="" || $meterManufID === null){
       return "";
     }
   }
-  echo "in addMeter, manufacture ID :".$meterManufID."<br/>";
+  //echo "in addMeter, manufacture ID :".$meterManufID."<br/>";
 
 
   $meterNum = $data["MeterNum"];
@@ -473,7 +473,7 @@ function addMeter($data){
     $data["SiemensPt"]: (($data["Point"]!==null && $data["Point"]!=="") ? 
 			$data["Point"]:"");
   $query = "SELECT MeterID, MeterNum,SiemensPt FROM MeterInfo WHERE BuildingID='{$buildingID}' AND MeterManufID='{$meterManufID}' AND FuelTypeID ='{$fuelTypeID}'";
-  echo "<br/>see the query: ".$query."<br/>";
+  //echo "<br/>see the query: ".$query."<br/>";
   $res = mysql_query($query);
   while ($row = mysql_fetch_array($res)){
     if (strcmp($meterNum,$row["MeterNum"])==0 && strcmp($siemensPt,$row["SiemensPt"])==0){
@@ -519,7 +519,7 @@ function addMeter($data){
   // remove the last comma.
   $value = substr($value, 0, strlen($value)-1).")";
   $query = substr($query, 0 ,strlen($query)-1).") ".$value;
-  echo "<br/>meter query is ".$query."!<br>";
+  //echo "<br/>meter query is ".$query."!<br>";
   mysql_query($query);
   return mysql_insert_id();  
   
@@ -564,14 +564,14 @@ function addFuelType($data){
   $type = ($data["FuelType"]!=="" && $data["FuelType"]!==null) ? 
     $data["FuelType"]:(($data["Type"]!==null && $data["Type"]!="") ? 
 		      $data["Type"] :(($data["type"]!="" && $data["type"]!==null) ? $data["type"] : ""));
-  echo "The type of fuel is ".$type."!<br/>";
+  //echo "The type of fuel is ".$type."!<br/>";
   if ($type==="" || $type ===null){
     return "";
   }
   $fuelTypeID = getDataFromDB("FuelType","FuelType",$type,"FuelTypeID");
   if ($fuelTypeID===""){
     $query = "INSERT INTO FuelType (FuelType) VALUES('{$type}')";
-    echo "<br/>Fuel Type query: ".$query."!<br/>";
+    //echo "<br/>Fuel Type query: ".$query."!<br/>";
     mysql_query($query);
     $fuelTypeID = mysql_insert_id();
   }

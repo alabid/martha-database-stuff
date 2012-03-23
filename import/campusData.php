@@ -129,13 +129,13 @@ function siemensEnergyHandler($content,$metadata){
       $meter["BuildingName"] = $field[2] ? $field[2]: errorMessage("Unknown building");
       
       $id = meterHandler($meter);
-      echo "return meter id {$id}!<br/>";
+      //echo "return meter id {$id}!<br/>";
       $meters[str_replace(":","",$field[0])] = $id; 
-      echo str_replace(":","",$field[0])."=>".$id."<br/>";
+      //echo str_replace(":","",$field[0])."=>".$id."<br/>";
     }else if (strstr($line, "<>Date")){
       $header = $field;
       //var_dump($header);
-      //echo "Hello world<br/>";
+  
     } else{
       if ($header){
 	$date = explode("/",$field[0]);
@@ -151,9 +151,10 @@ function siemensEnergyHandler($content,$metadata){
 	for ($i=2;$i < sizeof($field);$i++){
  
 	  if (!is_null($meters)){
-	    echo "meter is ";
-	    var_dump($meters);
-	    echo "<br/>";
+	  
+	    //echo "meter is ";
+	    //var_dump($meters);
+	    //echo "<br/>";
 	    $data["MeterID"] = $meters[$header[$i]];
 	    if (is_numeric($field[$i])){
 	      $data["MeasuredValue"] = $field[$i];
@@ -330,8 +331,8 @@ function kwWeekly($content){
     $data["Second"] = $time[2];
     $data["MeasuredValue"] = $field[2];
     $data["BTUConversion"] = ((double)$field[2])*((double)$metadata["Conversion"]);
-    var_dump($data);
-    //addEnergy($data);
+    // var_dump($data);
+    addEnergy($data);
   }
 
 }
@@ -393,12 +394,7 @@ function kwDemand($content){
     addEnergy($data);
   }
 }
-//addElectricity();
-//addCampusWater();
-//addCampusSteam();
-//addWindTurbine();
-//addkwDemand();
-//addkwWeekly();
+
 mysql_close();
 
 ?>
