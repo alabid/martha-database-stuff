@@ -11,7 +11,7 @@ if (!$db_select)
     die("Database select failed:".mysql_error());
   }
 if ($_GET["building"]){
-  echo "Select a building:  ";
+  echo "Building Name:  ";
   $query = "SELECT BuildingName FROM building ORDER BY BuildingName";
   $res = mysql_query($query);
   
@@ -25,7 +25,7 @@ if ($_GET["building"]){
   
   echo "</select>";
 }else if ($_GET["fuelType"]){
-  echo "Select a type of fuel to analyze: ";   
+  echo "Fuel Type: ";   
 
   $query = "SELECT FuelType FROM FuelType ORDER BY FuelType";
   $res = mysql_query($query);

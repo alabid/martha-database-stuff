@@ -110,13 +110,13 @@ function siemensEnergyHandler($content,$metadata){
   foreach ($content as $line){
     //var_dump($line);
 
-    if (preg_match("/^(\r?\n?)+$/", $line) ||
+    /*if (preg_match("/^(\r?\n?)+$/", $line) ||
 	strstr($line, "Report") ||
 	strstr($line, "Interval") || strstr($line, "Range") || strstr($line, "Key")) {
       var_dump($line);
       echo "<br/>";
       continue;
-    }
+      }*/
    
   
     // get the Siemens point and description.
@@ -151,7 +151,6 @@ function siemensEnergyHandler($content,$metadata){
 	for ($i=2;$i < sizeof($field);$i++){
  
 	  if (!is_null($meters)){
-	    //echo "hello the world"; 
 	    echo "meter is ";
 	    var_dump($meters);
 	    echo "<br/>";

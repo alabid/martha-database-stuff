@@ -1,7 +1,7 @@
 <html>
 <head>
 <title>Energy Sustainability Project Download Page</title>
-<script language='JavaScript' src='jQuery.js'></script>
+<script language='JavaScript' src='jquery-ui-1.8.18/jquery-1.7.1.js'></script>
 <script language='JavaScript' src='option.js'></script>
 <script language="javascript" src="show_instructions_examples.js"></script>
 <script language='JavaScript' src='bootstrap/js/bootstrap.min.js'></script>
@@ -9,17 +9,12 @@
 <script src="jquery-ui-1.8.18/ui/jquery.ui.widget.js"></script>
 <script src="jquery-ui-1.8.18/ui/jquery.ui.datepicker.js"></script>
 <link rel="stylesheet" href="jquery-ui-1.8.18/themes/base/jquery.ui.all.css">
-<linl href="css/demos.css" rel="stylesheet" type="text/css">
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap.min.css"/>
 <link rel="stylesheet" type="text/css" href="bootstrap/css/bootstrap-responsive.min.css"/>
 <link rel="stylesheet" type="text/css" href="simpleInterface.css" />
 </head>
 <body>
-<script type="text/javascript">
-$(function() {
-  $( "#datepicker" ).datepicker();
-});
-</script>
+
    <div id="wrapper">
      <h1>Energy Sustainability Project Download Page</h1>
      <div id="instructions-examples">
@@ -46,22 +41,22 @@ $(function() {
      <div class="row-fluid">
      <div id="select-data" class="span5">
              <div class="well">
-       <span>Select the number of columns: &nbsp;&nbsp;&nbsp;&nbsp;</span>
-       <select name='columns' id='columns' onchange ='addColumns(this)'>
+       <span>Select # of columns: &nbsp;&nbsp;&nbsp;&nbsp;</span>
+       <select name='columns' id='columns' onchange ='addColumns(this)' style='width:50px;'>
 	 <?php
-	 for ($i=0;$i<11;$i++){
+	 for ($i=0;$i<12;$i++){
 	 echo "<option value='".$i."'>". $i."</option>";
 	   }
 	   ?>
        </select><br/>
      <div id="forColumns"></div>
-     <button onclick="addColumn" id="add-column" class="btn">Add One More Column</button>
+     <button onclick="addColumn()" id="add-column" class="btn">Add One More Column</button>
      </div>
      </div>
-     <div id="select-constraints" class="span5">
+     <div id="select-constraints" class="span6">
        <div class="well">
-       <span>Select the number of constraints: </span>   
-       <select name name='constraints' id='constraints' onchange ='addConstraints(this)' >
+       <span>Select # of constraints: </span>   
+       <select name name='constraints' id='constraints' onchange ='addConstraints(this)' style='width:50px;'>
 	 <?php
 	 for ($i=0;$i<8;$i++){
 	 echo "<OPTION value='".$i."'>". $i."</OPTION>";
@@ -69,7 +64,7 @@ $(function() {
 	   ?>
        </select><br/>
         <div id="forConstraints"></div>
-	<button onclick="addConstraint()" id="add-cons" class="btn" data-toggle="button">Add One More Constraint</button>
+	<button onclick="addConstraint()" id="add-cons" class="btn">Add One More Constraint</button>
 	</div>
 	</div>
 	</div>
