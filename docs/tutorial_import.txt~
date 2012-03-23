@@ -1,0 +1,44 @@
+HOW TO IMPORT DATA INTO THE ENERGY DATA DATABASE
+================================================
+1. Click on the "Ready to Upload" button on the left pane of the import facility import.php page.
+
+2. After (1), the screen should appear as:
+   (img -> ready_upload.jpg)
+   
+3. Choose the type of file you want to upload. Right now the system supports only these types of files:
+   Wind Turbine #1
+   Steam Plant Production Logs
+   Electric Demand
+   Weekly Electric Consumption
+   (Siemens System) Campus Water Consumption
+   (Siemens System) Campus Steam Consumption
+   (Siemens System) Campus Electric Consumption
+   - Wind Turbine #1
+     -> Only Hourly Wind turbine data supported for now.
+      An example is the 2011 Hourly Wind Turbine Data from the Wind Turbine #1 shown below:
+      Filename: "2011 Hourly Wind Turbine Data.csv"
+
+     (Include photo of Wind Turbine Data)
+
+   - Steam Plant Production Logs
+     -> The steam plant production logs contains information about steam, water, oil, and gas consumption
+     in the Carleton College Facilities Steam Plant.
+     An example is the Steam Production Log 2009 shown below:
+     Filename: "Steam Plant Production Log 2009.xls"
+     (include photo of steam plant production log for 2009)
+     Then convert each worksheet in this ".xls" file to a tab-delimited ".txt" by using the "Save As" option.
+     Also, collapse the spaces in the filename, so for example, "Steam Plant Production Log 2009.xls" will
+     become "SteamPlantProductionLog2009.txt".
+     This is how the file to be uploaded ("SteamPlantProductionLog2009.txt") should look like:
+     (in Excel)
+     (include photo of steam plant production log 2009 txt in excel)
+     	      
+     (in a text editor)
+     (include photo of steam plant production log 2009 txt in a text editor like text wrangler)
+     
+   - Electric Demand
+   - Weekly Electric Consumption
+   - (Siemens System) Campus Water Consumption
+   - (Siemens System) Campus Steam Consumption
+   - (Siemens System) Campus Electric Consumption
+   

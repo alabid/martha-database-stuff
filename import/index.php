@@ -176,19 +176,18 @@ for data management. </marquee></div>
    echo <<<UPLS
    <div id="accordion">
 	<h3><a href="#" data-toggle="collapse" data-target="#project">Energy Data Management Project</a></h3>
-	<div id="project" class="collapse in">
-		<p>
-		Some stuff here, probably an overview
-		</p>
+	<div id="project" class="collapse in">  
+               <br/>
+	       <strong>This user interface is for the Carleton Energy Sustainability Project.</strong>
+               <br/><br/>
 	</div>
 	<h3><a href="#" data-toggle="collapse" data-target="#collaborator">Collaborators</a></h3>
 	<div id="collaborator" class="collapse in">
 		<p> (Alphabetical order by last name)
-	  <li>Daniel Alabi</li>
-	  <li>Paula Lackie</li>
-	  <li>Martha Larson</li>
-	  <li>Jie Lin</li>
-	  <li>More</li>
+          <li><a href="mailto:alabid@carleton.edu">Daniel Alabi   (alabid@carleton.edu)</a></li>
+          <li><a href="mailto:plackie@carleton.edu">Paula Lackie   (plackie@carleton.edu)</a></li>
+          <li><a href="mailto:mlarson@carleton.edu">Martha Larson   (mlarson@carleton.edu)</a></li>
+          <li><a href="mailto:linji@carleton.edu">Jie Lin  (linji@carleton.edu)</a></li>
 		</p>
 	</div>
 	<h3><a href="#" data-toggle="collapse" data-target="#info">More information</a></h3>
@@ -197,10 +196,10 @@ for data management. </marquee></div>
 	Contact <strong>Martha Larson</strong> for more information and arrangment for tours.
 	  
 		</p>
-		<ul><li>Manager of Campus Energy and Sustainability</li>
-		  	<li>Office:Facilities Building 302</li>
-			<li>Email:mlarson@carleton.edu</li>
-			<li>Phone:x7893</li>
+		<ul><ol>Manager of Campus Energy and Sustainability</ol>
+		  	<ol>Office:Facilities Building 302</ol>
+			<ol>Email:mlarson@carleton.edu</ol>
+			<ol>Phone:x7893</ol>
 		
 		</ul>
 	</div>
@@ -215,19 +214,84 @@ UPLS;
    <script>reload();</script>
 </div>
 UPLS;
-   }
-   
+   } else if ($_GET["option"] && $_GET["option"] == "tutorial") {
+     echo <<<UPLS
+       <div class="alert">
+        <strong>Please</strong> Please read the whole tutorial if possible before you start uploading
+       </div>
+	<div class="upload-tutorial">
+	   <h2>HOW TO IMPORT DATA USING THIS INTERFACE</h2>			   
+            <ul>
+	     <li>
+              Click on the "Ready to Upload" button on the left pane of the import facility page import.php.
+	     </li>
+             <p>
+    							     You should see something like this:</p>
+             <a href="img/ready_upload.jpg"><img src="img/ready_upload.jpg" width="300px" height="300px"/></a>
+              <br/>
+	      <li>Choose the type of file you want to upload. Right now the system supports only these types of files:
+             </li>  
+            </ul>
+           <ul>
+            <ol>Wind Turbine #1 data files</ol>
+            <ol>Steam Plant Production Logs</ol>
+            <ol>Electric Demand</ol>
+            <ol>Weekly Electric Consumption</ol>
+	    <ol>(Siemens System) Campus Water Consumption</ol>
+            <ol>(Siemens System) Campus Steam Consumption</ol>
+            <ol>(Siemens System) Campus Electric Consumption</ol>
+          </ul> 
+          <h3>Wind Turbine #1</h3>
+            <p>=> Only Hourly Wind Turbine Data is currently supported. </p>
+            <p>An example is the 2011 Hourly Wind Turbine Data file from Wind Turbine #1 shown below:</p>
+            <a href="img/wind_turbine1.jpg"><img src="img/wind_turbine1.jpg" width="300px" height="300px"/></a><br/><br/>
+	  <h3>Steam Plant Production Logs</h3>
+           <p>=> The steam Plant production logs contains information about steam, water, and 
+             gas consumption by the Carleton College Facilities Steam Plant.
+           </p>
+           <p>An example is the Steam Plant Production Log 2009 shown below:</p>
+           <p><strong>Filename: "Steam Plant Production Log 2009.xls"</strong></p>
+           <a href="img/raw_steam.jpg"><img src="img/raw_steam.jpg" width="300px" height="300px"/></a>
+	   <p> 
+           Then convert each worksheet in this ".xls" file to a tab-delimited ".txt" by
+           using the "Save As" option in excel.<br/>
+           Also collapse the spaces in the filename, so for example, 
+           "Steam Plant Production Log 2009.xls" will become "SteamPlantProductionLog2009.txt".<br/>
+           This is how the file to be uploaded ("SteamPlantProductionLog2009.txt") should look like:
+           </p>
+           <p><strong>(in Excel)</strong></p>
+           <a href="img/converted_steam_excel.jpg"><img src="img/converted_steam_excel.jpg" width="300px" height="300px"/></a>  <br/>
+            <p><strong>(in a text editor)</strong></p>
+           <a href="img/converted_steam_tedit.jpg"><img src="img/converted_steam_tedit.jpg" width="300px" height="300px"/>                  </a>
+           </p><br/><br/>
+
+           <h3>Electric Demand</h3>
+	    <p>File to be uploaded should look like this: </p>
+             <a href="img/elec_demand.jpg"><img src="img/elec_demand.jpg" width="300px" height="300px"/></a><br/><br/>				     <h3>Weekly Electric Consumption</h3>
+            <p>File to be uploaded should look like this:</p> 
+              <a href="img/weekly_electric.jpg"><img src="img/weekly_electric.jpg" width="300px" height="300px"/></a><br/><br/>
+	   <h3>(Siemens System) Campus Water Consumption</h3>
+            <p>File to be uploaded should look like this: </p>
+	    <p><strong>Filename: "CAMPUS WATER.csv"</strong></p>
+            <a href="img/campus_water.jpg"><img src="img/campus_water.jpg" width="300px" height="300px"/></a><br/><br/>
+            <h3>(Siemens System) Campus Steam consumption</h3>
+            <p>File to be uploaded should look like this: </p>
+	    <p><strong>Filename: "CAMPUS STEAM.csv"</strong></p>
+            <a href="img/campus_steam.jpg"><img src="img/campus_steam.jpg" width="300px" height="300px"/></a><br/><br/>
+	    <h3>(Siemens System) Campus Electric Consumption</h3>
+	    <p>File to be uploaded should look like this: </p>
+	    <p><strong>Filename: "CAMPUS ELECTRIC.csv"</strong></p>
+             <a href="img/campus_electric.jpg"><img src="img/campus_electric.jpg" width="300px" height="300px"/></a><br/><br/>
+       </div>
+UPLS;
+}
   ?>
  </div><!--/.well -->
 </div>
 
 
-  
-
-
+ 
 </div>
 </div>
-  
-
 </body>
 </html>
