@@ -170,6 +170,8 @@ function selectEnergy($columns,$constraints){
 
 function writeIntoCSV($data){
   if (sizeof($data)<1){
+    echo "No data satisfy all constraints.<br>".'<a href="javascript:history.go(-1);">'.
+	  '&lt;&lt Sorry, Go Back.</a>';
     return;
   }
  

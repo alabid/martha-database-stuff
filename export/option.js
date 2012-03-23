@@ -38,7 +38,7 @@ function dataHandler(){
     
     if (cons!=false || parseInt(document.getElementById("constraints").value)==0){
 	url +="&"+cons;
-	alert("getDataOut.php?"+url);
+	//alert("getDataOut.php?"+url);
 	//alert(url);
 	window.location.href="getDataOut.php?"+url;
 	// Equivalence: "Enter" the URL to the address field of the brower.
@@ -148,12 +148,11 @@ function selectConstraints(){
     return url;
 }
 
+
 /*
-  Dynamically generate drop-down menu according to the number of constraints selected.
+  Function for "Add one more constraint" button.
 
 */
-
-
 function addConstraint(){
     var selection = document.getElementById("constraints");
  
@@ -174,6 +173,10 @@ function addConstraint(){
     
     
 }
+/*
+  Dynamically generate drop-down menu according to the number of constraints selected.
+
+*/
 
 function addConstraints(selection){
     curCons = new Array();
