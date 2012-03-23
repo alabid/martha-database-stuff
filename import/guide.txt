@@ -3,6 +3,6 @@ You are supposed to use exactly the same formats as provided.
 Each file should be named properly according to the following criteria:
 1. Don't include any white space.
 2. Include the energy type.
-3. Only .txt and .csv accepted.
+3. Only .txt accepted.
 After you check the above, you can start uploading.
 Failure to do so will cause a severe error in your database.

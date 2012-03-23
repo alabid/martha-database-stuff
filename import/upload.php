@@ -1,6 +1,7 @@
 <?php
 
 include_once("campusData.php");
+include_once("steam.php");
 include_once("senddata.php");
 
 if (empty($_FILES) && empty($_POST) && isset($_SERVER['REQUEST_METHOD']) && strtolower($_SERVER['REQUEST_METHOD']) == 'post') {   
@@ -18,7 +19,7 @@ $filename = str_replace("?", "", $filename);
 $uploaddir = "uploads/";
 $path = $uploaddir.$filename; 
 
-$allowedExtensions = array("txt","csv");
+$allowedExtensions = array("txt");
 foreach ($_FILES as $file) {
   if ($file['tmp_name'] > '') {
     if (!in_array(end(explode(".", strtolower($file['name']))), $allowedExtensions)) {
@@ -59,28 +60,27 @@ if($filename != null){ //AS LONG AS A FILE WAS SELECTED...
     die("Database select failed:".mysql_error());
      }
    
-   $executionFunctions=array("wind1" => "hourlyWindTurbine",
-		    "campusElec"=>"electricHandler",
-		    "elecDemand"=>"kwDemand",
-		    "weeklyElecConsump" =>"kwWeekly",
-		    "campusWater" => "campusWaterHandler",
-		    "campusSteam" => "campusSteamHandler");
-   $checkfunctions=array("wind1" => "checkHourlyWindTurbine",
-		    "campusElec"=>"checkElectricHandler",
-		    "elecDemand"=>"checkkwDemand",
-		    "weeklyElecConsump" =>"checkkwWeekly",
-		    "campusWater" => "checkCampusWaterHandler",
-		    "campusSteam" => "checkCampusSteamHandler");
+     $executionFunctions=array("wind1" => "hourlyWindTurbine",
+			     "campusElec"=>"electricHandler",
+			     "elecDemand"=>"kwDemand",
+			     "weeklyElecConsump" =>"kwWeekly",
+			     "campusWater" => "campusWaterHandler",
+			     "campusSteam" => "campusSteamHandler",
+			       "log"=>"logHandler");
+   $checkFunctions=array("wind1" => "hourlyWindTurbineChecker",
+			 "campusElec"=>"electricChecker",
+			 "elecDemand"=>"kwDemandChecker",
+			 "weeklyElecConsump" =>"kwWeeklyChecker",
+			 "campusWater" => "campusWaterChecker",
+			 "campusSteam" => "campusSteamChecker",
+			 "log"=>"logChecker");
+   
 
     $f = fopen($path,"r") or die("Can't open file");
     $data =fread($f, filesize($path));
     //echo $data;
-    $content = explode("\n",$data);
-    if (sizeof($content) == 1){
-      $content = explode("\r",$data);
-    }
+    $content = preg_split("/\r|\n|(\n\r)/", strtolower($data));
     //var_dump($content);
-    //echo $executionFunctions[$_GET["type"]];
     //$checkFunctions[$_GET["type"]]($content);
     if ($_GET["type"]=="log"){
       $executionFunctions["log"]($content, $_GET["year"]);
@@ -114,7 +114,8 @@ UPLS;
     
   } else {
    
-    echo "Error";
+    echo "Error! Rename the file.<br>".'<a href="javascript:history.go(-1);">'.
+	  '&lt;&lt Sorry, Go Back</a>';
   }
 }
   else{
