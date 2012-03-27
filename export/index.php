@@ -16,25 +16,40 @@
 <body>
 
    <div id="wrapper">
-     <h1>Energy Sustainability Project Download Page</h1>
+     <h1 style="color:blue;text-align:center;">Energy Sustainability Project Download Page</h1>
      <div id="instructions-examples">
        <ul class="nav nav-pills">
+
         <li class="instr"><a href="#">Instructions</a></li>
         <li class="resul"><a href="#">Example Results</a></li>
         <li><a href="#"><span class="caret"></span></a></li>
       </ul>
+     
      <div id="instructions">
        <ul>
-        <li>Select the number of columns (variables) you want included in the csv download.</li>
-        <li>Then choose the names of the columns (variables) you want to be included in the csv download</li>
-        <li>Then select the number of constraints you want applied to the CSV. Constraints are the conditions you want to limit the downloaded data to. </li>
-        <li>Example constraints are Start Date, End Date, and so on.</li>
+	 <li>Procedures: Select columns => Select constraints =>
+     Download the data as csv</li>
+        <li>To choose the number of columns you want to include in
+     your csv download, you can either choose the number of columns you want in
+     the beginning or click on "Add One More Column" button to
+     add one column each time. (Similar for selecting # of constraints.) </li>
+        <li>Then, you need to specify what each column in the compiled
+     csv file is.</li>
+        <li>Since the database contains a huge amount of data, you may
+     only want to download a small portion of the data by some
+     conditions (constraints). (Also, you may not be able to download
+     the whole database as csv at once by the same reason.)</li>
+
+     <li>Note: You can either use date picker to pick a date or type
+        in the date you want in the format shown if you choose either start
+        date or end date as one of your constraints. </li>
+        
        </ul>
      </div>
      <div id="examples" display="none">
        <h3>Examples</h3>
-       <a href="img/example_res.jpg"><img src="img/example_res.jpg" width="100px" height="100px"/> </a>
-       <a href="img/example_res2.jpg"><img src="img/example_res2.jpg" width="100px" height="100px"/></a>
+       <a href="img/example_res.jpg" target="_blank"><img src="img/example_res.jpg" width="100px" height="100px"/> </a>
+       <a href="img/example_res2.jpg" target="_blank"><img src="img/example_res2.jpg" width="100px" height="100px"/></a>
      </div>
      </div>
      <div class="container-fluid">
