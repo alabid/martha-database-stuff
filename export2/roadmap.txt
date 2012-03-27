@@ -1,0 +1,11 @@
+dropdown.php = get all the building names and fuel types from the database and construct dropdown selection menus for the simple user interface.
+
+getDataOut.php = access the database and get the selected fields according to the selected constraints from the database. It stores the data into a csv file which the user can download as an attachment. 
+
+jQuery.js  = a JavaScript library that contains multiple functions which can be used in the web pages.
+
+option.js = the JavaScript file we wrote for the simple user interface. It dynamically generates the selection dropdown menus according to the user's wishes.
+
+simpleInterface.php = the php file, the webpage (as a part of website url) that contains the interface. Only this php file should be opened on the browser by entering the full path, something like "domain"/interface/simpleInterface.php, where "domain" could be localhost, or something related to carleton.edu, or IP address (with port number if default port number 80 is not used for the web server.).
+
+simpleInterface.css = the web markup, a file that specifies how the web page should look like, how large the font should be and how many spaces each element should take, etc.. 

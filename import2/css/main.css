@@ -1,0 +1,32 @@
+
+p {
+	margin: 0;
+	font-size: 1.7em;
+	padding: 1em 0 0; 
+	line-height: 120%;
+	}	
+	
+a img {
+	border: none;
+	}	
+
+a {
+	color: #D8D4B6;
+	text-decoration: none;
+	overflow:hidden; 
+	}	
+
+a:hover {
+	color: #CB6F14;
+	}
+
+h1{
+    padding: 1em 0.5em;
+    text-align:center;
+    font-size:3em;
+    color: #D8D4B6;
+    font-family: "Times New Romane", Arial, Verdana, sans-serif;
+    
+}
+
+
