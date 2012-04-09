@@ -133,6 +133,49 @@ function genericQuery($select, $from, $where, $order,$metadata){
   return $data;
 }
 
+
+function checkExistence($select,$from, $where){
+  $query = "SELECT COUNT(*) AS ROW FROM ";
+  
+  foreach ($from as $table){
+    $query = $query."".$table." NATURAL JOIN ";
+  }
+  $query  = substr($query, 0, strrpos($query,"NATURAL JOIN"));
+  $query = $query."".$from." WHERE ";
+  foreach (array_keys($where) as $condition){
+    $query = $query."".$condition."'{$where[$condition]}' AND ";
+  }
+  $query  = substr($query, 0, strrpos($query,"AND"));
+  $res = mysql_query($query);
+  $row = mysql_fetch_array($res);
+  echo $row["ROW"];
+  if ($row["ROW"] == 0){
+    return false;
+  }else{
+    return true;
+  }
+}
+
+
+function checkDuration($select,$from,$where){
+  if (!$_GET["duration"]){
+    return null;
+  }else{ 
+    if (checkExistence($select,$from,$where)){
+      
+    }else{
+      //updateDuration();
+      
+    }
+    
+  }
+
+
+}
+function accumulate(){
+ 
+
+}
 /*
   Not used probably.
 */
@@ -159,6 +202,7 @@ function selectEnergy($columns,$constraints){
   $where = $constraints;
   $order = "MeterID, FuelType, DATE(Date), TIME(Date)";
   $metadata = array();
+  accumulate(checkDuration($select,$from,$where));
   writeIntoCSV(genericQuery($select,$from,$where,$order,$metadata));
 
   
@@ -242,6 +286,7 @@ function getConstraints(){
   if ($_GET["duration"]){
     $field["Duration="] = $_GET["duration"];
   }
+  
   //var_dump($field);
   return $field;
 }
