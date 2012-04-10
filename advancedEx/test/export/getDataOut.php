@@ -118,7 +118,9 @@ function genericQuery($select, $from, $where, $group, $order,$metadata){
     $query  = substr($query, 0, strrpos($query,"AND"));
   }
   // Set the ordering conditions.
-  $query = $query." GROUP BY {$group}";
+  if ($group){
+    $query = $query." GROUP BY {$group}";
+  }
   $query = $query." ORDER BY {$order}";
   $res = mysql_query($query);
   //echo "the query is ".$query;
@@ -136,8 +138,7 @@ function genericQuery($select, $from, $where, $group, $order,$metadata){
     array_push($data,$temp);
     //construct the big array of data, called $data
   }
-  //var_dump($data);
-  //echo "<br/>";
+
   return $data;
 }
 
@@ -159,13 +160,32 @@ function trial(){
   "select Hour(Date),sum(BTUConversion) from EnergyData NATURAL JOIN MeterInfo NATURAL JOIN FuelType where FuelType='wind' and Year(Date)=2011 group by Hour(Date) order by Date";
 }
 
+function augmentSelection(){
+
+
+}
+function grouping(){
+
+}
+
 function genericQueryWrapper($select, $from, $where, $order,$metadata){
   $duration = checkDuration($from,$where);
-  $select = accumulate($select, $duration, $where);
+  if ($duration){
+    return null;
+  }
+  if ($_GET["duration"]==$duration){
+    
+    return genericQuery($select, $from, $where, null, $order, $metadata);
+
+  }else{
+
+  }
+  // how to check duration, why it doesn't work. 
+ 
+  //$select = accumulate($select, $duration, $where);
   // We might need some calculations to get suitable duration.
-  
-  $group="";
-  genericQuery($select, $from, $where, $group, $order, $metadata);
+  //$group="MONTH(Date)";
+  return genericQuery($select, $from, $where, $group, $order, $metadata);
 }
 
 /*
@@ -228,14 +248,14 @@ function preliminaryCheck($data, $type, $value){
 */
 function getSmallerDuration($curDuration){
   
-  if ($curDuration=="monthly"){
-    return "daily";
+  if ($curDuration=="Monthly"){
+    return "Daily";
   }
-  if ($curDuration=="daily"){
-    return "hourly";
+  if ($curDuration=="Daily"){
+    return "Hourly";
   }
 
-  if ($curDuration=="hourly"){
+  if ($curDuration=="Hourly"){
     return "10minutes";
   }
 
@@ -255,24 +275,19 @@ function getSmallerDuration($curDuration){
   (This part is not handled by this function, but it is in general how this function is involved.)
 */
 function checkDuration($from,$where){
-  if (!$_GET["duration"]){
-    return null;
-  }else{ 
-    if (checkExistence($from,$where)){
-      return null;
-      
-    }else{
-      $duration = getSmallerDuration($_GET["duration"]);
+  if (!$_GET["duration"] || (checkExistence($from,$where))){
+      return $_GET["duration"];
+  }else{
+    $duration = getSmallerDuration($_GET["duration"]);
+    $where["Duration="]=$duration;
+    while ($duration && !checkExistence($from,$where)){
+      $duration = getSmallerDuration($duration);
       $where["Duration="]=$duration;
-      while ($duration && !checkExistence($from,$where)){
-	$duration = getSmallerDuration($duration);
-	$where["Duration="]=$duration;
-      }
-      if (!$duration || (!checkExistence($from,$where))){
-	return false;
-      }else{
-	return $duration;
-      }
+    }
+    if (!$duration || (!checkExistence($from,$where))){
+      return true;
+    }else{
+      return $duration;
     }
   }
 }
@@ -427,7 +442,8 @@ function getColumns(){
   }
   return $field;
 }
-
-//selectEnergy(getColumns(),getConstraints());
+if ( sizeof(get_included_files())==1){
+    selectEnergy(getColumns(),getConstraints());
+  }
 
 ?>
