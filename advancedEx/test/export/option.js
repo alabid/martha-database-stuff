@@ -37,7 +37,10 @@ function dataHandler(){
     var cons = selectConstraints();
     
     if (cons!=false || parseInt(document.getElementById("constraints").value)==0){
-	url +="&"+cons;
+	if (parseInt(document.getElementById("constraints").value)!=0){
+	    url +="&"+cons;
+	}
+
 	//alert("getDataOut.php?"+url);
 	//alert(url);
 	window.location.href="getDataOut.php?"+url;
@@ -403,6 +406,17 @@ function calculateDay(selection){
   
 }
 */
+
+
+
+function restrictedOptionHandler(selection){
+    var parent = selection.parentNode;
+
+    alert("'#"+parent.id+"'");
+    alert(parent.id.substring(parent.id.length-1));
+    $("'#"+parent.id+"'").trigger("onchange",parent, parent.id.substring(parent.id.length-1));
+}
+
 /*
 
 
@@ -466,7 +480,7 @@ function optionHandler(selection,id){
 	}else{
 	    url+="request=fuelType";
 	}
-	alert(url);
+	//alert(url);
 	var xmlhttp = new XMLHttpRequest();
 	xmlhttp.open("GET",url,true);
 	xmlhttp.onreadystatechange = function() {
