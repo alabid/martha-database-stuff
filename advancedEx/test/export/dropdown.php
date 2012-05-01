@@ -17,7 +17,7 @@ if ($_GET["request"]=="building"){
   $res = mysql_query($query);
   if (preliminaryCheck($_GET,"BuildingName",null)){
     echo "Building Name:  ";
-    echo "<select name='building' id='building'>";
+    echo "<select name='building' id='building' onchange='restrictedOptionHandler(this)'>";
     
     echo "<OPTION value='all'>All buildings</OPTION>";
     
@@ -29,17 +29,16 @@ if ($_GET["request"]=="building"){
     }
     echo "</select>";
   }else{
-    echo "No data available for given constraints. Revise your constraints.";
+    echo "No data available for given constraints.<br> Revise your constraints.";
   }
   
 }else if ($_GET["request"]=="fuelType"){
-
 
   $query = "SELECT FuelType FROM FuelType ORDER BY FuelType";
   $res = mysql_query($query);
   if (preliminaryCheck($_GET,"FuelType",null)){
     echo "Fuel Type: ";   
-    echo "<select name='fuelType' id='fuelType'>";
+    echo "<select name='fuelType' id='fuelType' onchange='restrictedOptionHandler(this)'>";
     echo "<OPTION value='all'>All</OPTION>";
     while ($row = mysql_fetch_array($res)){
       if (preliminaryCheck($_GET,"FuelType",$row["FuelType"])){
@@ -48,7 +47,7 @@ if ($_GET["request"]=="building"){
     }
   echo "</select>";
   }else{
-    echo "No data available for given constraints. Revise your constraints.";
+    echo "No data available for given constraints. <br> Revise your constraints.";
   }
 }
 

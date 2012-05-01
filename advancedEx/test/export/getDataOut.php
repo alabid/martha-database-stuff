@@ -160,16 +160,9 @@ function trial(){
   "select Hour(Date),sum(BTUConversion) from EnergyData NATURAL JOIN MeterInfo NATURAL JOIN FuelType where FuelType='wind' and Year(Date)=2011 group by Hour(Date) order by Date";
 }
 
-function augmentSelection(){
-
-
-}
-function grouping(){
-
-}
 
 function genericQueryWrapper($select, $from, $where, $order,$metadata){
-  $duration = checkDuration($from,$where);
+  /*$duration = checkDuration($from,$where);
   if ($duration){
     return null;
   }
@@ -178,14 +171,14 @@ function genericQueryWrapper($select, $from, $where, $order,$metadata){
     return genericQuery($select, $from, $where, null, $order, $metadata);
 
   }else{
-
-  }
+    
+  }*/
   // how to check duration, why it doesn't work. 
  
   //$select = accumulate($select, $duration, $where);
   // We might need some calculations to get suitable duration.
   //$group="MONTH(Date)";
-  return genericQuery($select, $from, $where, $group, $order, $metadata);
+  return genericQuery($select, $from, $where, null, $order, $metadata);
 }
 
 /*
@@ -311,7 +304,6 @@ function getConditions($attr,$op,$val){
 }
 
 /*
-  This function is called by other pages outside this file.
   The essence of this file is this function.
   It acts like a main function in python, although it is actually not.
   
