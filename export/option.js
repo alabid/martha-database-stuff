@@ -69,7 +69,7 @@ function selectConstraints(){
 	    url += temp+"=";
 	    url += document.getElementById(temp).value;
 	    if (temp.toString()=="fiscalYear"){
-		// checking
+		/* checking a fiscal year is not earlier than the start date or more than one year later than the end date.*/
 		if (startYear && parseInt(document.getElementById(temp).value)<startYear){
 		    window.alert("Fiscal year cannot be earlier than the beginning year.");
 		    return false;
@@ -86,10 +86,12 @@ function selectConstraints(){
 	    else {
 		var curDate = $( "#enddatepicker" ).datepicker("getDate");
 	    }
+	    // must pick a day if a date picker appears.
 	    if (!curDate){
 		alert("Please choose a date.");
 		return false;
 	    }
+	    // get day, month and year for HTTP GET.
 	    var day = curDate.getDate();
 	    
 	    var month = curDate.getMonth() + 1;
@@ -151,7 +153,19 @@ function selectConstraints(){
 
 /*
   Function for "Add one more constraint" button.
-
+  hierarchy of divisions appeared in html is as following:
+  1. constraints 
+     This division contains a selection which specifies the number of constraints
+     selected.
+  2. forConstraints
+       all selection menus pertain to constraints are inside.
+   -->  2.1 consDiv0
+   -->  2.2 - 2.11 maybe consDiv1-10
+  Probably the structure is more complicated. This is what I remember so far.
+  Feel free to change the comments if you discover more.
+  Also, to avoid confusion, please distinguish the two functions
+  addConstraint -- This one accompanies with "Add one more constraint" button.
+  addConstraints  -- This one associates with the selection of the number of constraints.
 */
 function addConstraint(){
     var selection = document.getElementById("constraints");
@@ -175,7 +189,7 @@ function addConstraint(){
 }
 /*
   Dynamically generate drop-down menu according to the number of constraints selected.
-
+  
 */
 
 function addConstraints(selection){
@@ -191,7 +205,14 @@ function addConstraints(selection){
     addOneConstraint(0);
 }
 
-
+/*
+  Probably the naming of functions is not good enough. 
+  Since several functions have similar names, I stress the differences here.
+  If you fully understand what each part of the codes does, feel free to rename any functions.
+  To avoid confusion, notice the following two functions have similar names but different functionalities. 
+  addColumn() function is similar to addConstraint.
+  addColumns() is similar to addColumns().
+*/
 function addColumn(){
     var selection = document.getElementById("columns");
  
@@ -239,6 +260,7 @@ function columnHandler(selection,id){
 }
 /*
   add one more drop-down menu for selection.
+  This function checks what attributes have not been selected and display only those attribtues to the users so that it avoids selecting the same column attribute more than once.
 */
 function addOneColumn(id){
  
@@ -404,7 +426,7 @@ function calculateDay(selection){
 }
 */
 /*
-
+  This function handles the options for constraints.
 
 */
 function optionHandler(selection,id){

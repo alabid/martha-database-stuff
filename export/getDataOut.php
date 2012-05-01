@@ -5,7 +5,7 @@
  $colVal  -- the value of the attribute above (in WHERE clause)
  $colQuery -- the desired field/column (attribute)
  */
-$connection = mysql_connect("localhost","root","");
+$connection = mysql_connect("localhost","alabid","energydata");
 if (!$connection)
   {
     die("Database connection failed:". mysql_error());
@@ -19,7 +19,10 @@ if (!$db_select)
 
 /*
   Generic query to access one field in one table at one time.
-
+  This functions is too old and too simple. But we do use this function.
+  There exists a better way to get the required data and get rid of this function and several functions after this one. 
+  Just keep here for now since we need to make sure deleting this one
+  will not break the codes. There might be other files depending on this function. If you would like to clean up the code, this part is definitely a good start. Due to the time constraints, we decided not to make a huge modification during terms. But this is doable during break. 
 */
 function getDataFromDB($tblName,$colName,$colVal,$colQuery){
   /*
@@ -38,6 +41,9 @@ function getDataFromDB($tblName,$colName,$colVal,$colQuery){
 /*
   The following several functions are self-explanatory by their names.
   They convert something to something else.
+  I don't think we need these functions, but we can keep them now.
+  To delete these functions, please check that doing so doesn't break any
+  codes, especially codes outside this file that include this file.
 */
 function buildingIDtoBuilding($buildingID){
   if ($buildingID !==""){
@@ -60,6 +66,7 @@ function meterToBuildingID($meterID){
     return "";
   }
 }
+// this one is used by meterToFuelType.
 function meterToFuelTypeID($meterID){
    if ($meterID!==""){
     return getDataFromDB("MeterInfo","MeterID",$meterID,"FuelTypeID");
@@ -68,6 +75,7 @@ function meterToFuelTypeID($meterID){
   }
 }
 
+// we use this one.
 function meterToFuelType($meterID){
   if ($meterID !==""){
     return fuelTypeIDToFuelType(meterToFuelTypeID($meterID));
@@ -75,6 +83,7 @@ function meterToFuelType($meterID){
     return "";
   }
 }
+// probably this one is unused.
 function fuelTypeIDToFuelType($fuelTypeID){
   if ($fuelTypeID!==""){
     return getDataFromDB("FuelType","FuelTypeID",$fuelTypeID,"Type");
@@ -88,6 +97,9 @@ function fuelTypeIDToFuelType($fuelTypeID){
   This function generates a generic query. It can query multiple tables and multiple fields
   by multiple conditions and order these data in the desired data. Then it can append any metadata
   into the array of data, which can be later written into a file. 
+  NOTICE: Proper design/naming of the database schema is a must for this function.
+  This functions uses NATURAL JOIN when constructing SQL.
+  Anything that is not compatiable with NATURAL JOIN will cause a problem here.
 
 */
 function genericQuery($select, $from, $where, $order,$metadata){
@@ -133,49 +145,6 @@ function genericQuery($select, $from, $where, $order,$metadata){
   return $data;
 }
 
-
-function checkExistence($select,$from, $where){
-  $query = "SELECT COUNT(*) AS ROW FROM ";
-  
-  foreach ($from as $table){
-    $query = $query."".$table." NATURAL JOIN ";
-  }
-  $query  = substr($query, 0, strrpos($query,"NATURAL JOIN"));
-  $query = $query."".$from." WHERE ";
-  foreach (array_keys($where) as $condition){
-    $query = $query."".$condition."'{$where[$condition]}' AND ";
-  }
-  $query  = substr($query, 0, strrpos($query,"AND"));
-  $res = mysql_query($query);
-  $row = mysql_fetch_array($res);
-  echo $row["ROW"];
-  if ($row["ROW"] == 0){
-    return false;
-  }else{
-    return true;
-  }
-}
-
-
-function checkDuration($select,$from,$where){
-  if (!$_GET["duration"]){
-    return null;
-  }else{ 
-    if (checkExistence($select,$from,$where)){
-      
-    }else{
-      //updateDuration();
-      
-    }
-    
-  }
-
-
-}
-function accumulate(){
- 
-
-}
 /*
   Not used probably.
 */
@@ -191,25 +160,33 @@ function getConditions($attr,$op,$val){
   return null;
 }
 
-/**/
+/*
+  This function is the essence of the file.
+  It acts like a main function in python, although it is actually not.
+  This function relies on several helper functions, such as
+  
+
+*/
 function selectEnergy($columns,$constraints){
   
   $buildingName = meterToBuilding($meterID);
   $fuelType = meterToFuelType($meterID);
+  // we actually use meterToBuilding, meterToFuelType.
+
   $select = $columns; 
     //array("Date","FiscalYear","BuildingName","FuelType","MeasuredValue","Unit","BTUConversion");
   $from = array("EnergyData","DateObj","FuelType","MeterInfo","building");
   $where = $constraints;
   $order = "MeterID, FuelType, DATE(Date), TIME(Date)";
   $metadata = array();
-  accumulate(checkDuration($select,$from,$where));
   writeIntoCSV(genericQuery($select,$from,$where,$order,$metadata));
 
   
 }
 /*
   Output an array of data into csv format
-  
+  This part sets the header of the web page so that users can only download csv as an attachment.
+  To make this download work, please do NOT echo/print_r/var_dump anything inside this php code or any executable part of php files that you might include later.
 */
 
 function writeIntoCSV($data){
@@ -220,8 +197,8 @@ function writeIntoCSV($data){
   }
  
   header("Content-Type:text/csv");
-  $date = new DateTime("now");
-  header("Content-Disposition:attachment;filename=energyData-" . $date->format("Ymd-H:i:s") . ".csv");
+  $date = date("Ymd-H:i:s", strtotime(strftime('%c')));
+  header("Content-Disposition:attachment;filename=energyData-" . $date . ".csv");
   $fp = fopen("php://output","w");
 
   fputcsv($fp,array_keys($data[0]));
@@ -236,6 +213,7 @@ function writeIntoCSV($data){
 }
 /*
   process the URL from GET method/ protocol.
+  It returns an array of constraints that are ready to be included as parts of SQL.
 */
 function getConstraints(){
   $field = array();
@@ -245,6 +223,7 @@ function getConstraints(){
       $field["BuildingName="] = $_GET["building"];
     }
   }
+  // parse and construct a beginning date.
   if ($_GET["startDateYear"]){ 
     if (strcmp($_GET["startDateYear"],"null")!==0){
       if ($_GET["startDateMonth"] && (strcmp($_GET["startDateMonth"],"null")!==0)){
@@ -258,7 +237,7 @@ function getConstraints(){
       }
     }
   }  
-
+  // parse and construct a deadline.
    if ($_GET["endDateYear"]){ 
     if (strcmp($_GET["endDateYear"],"null")!==0){
       if ($_GET["endDateMonth"] && (strcmp($_GET["endDateMonth"],"null")!==0)){
@@ -286,7 +265,6 @@ function getConstraints(){
   if ($_GET["duration"]){
     $field["Duration="] = $_GET["duration"];
   }
-  
   //var_dump($field);
   return $field;
 }
